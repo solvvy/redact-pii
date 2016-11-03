@@ -1,0 +1,10 @@
+{
+  "env" {
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "comma-dangle": 0,
+    "complexity": [2, 10]
+  }
+}

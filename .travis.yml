@@ -1,0 +1,20 @@
+language: node_js
+cache:
+  directories:
+    - node_modules
+notifications:
+  email: false
+node_js:
+  - v6
+  - v5
+  - v4
+before_install:
+  - npm install -g coveralls
+before_script:
+  - npm prune
+script:
+  - npm run test:lint
+  - npm run test:coverage
+after_success:
+  - cat ./coverage/lcov.info | coveralls || echo 'Failed to upload to coveralls...'
+  # enable when API semi-finalized - npm run semantic-release
