@@ -13,6 +13,7 @@ before_install:
 before_script:
   - npm prune
 script:
+  - git log --oneline | ./bin/validate-commit-msg.js
   - npm run test:lint
   - npm run test:coverage
 after_success:
