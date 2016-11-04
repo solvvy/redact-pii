@@ -23,6 +23,12 @@ defineTest('index.js', function (Redactor) {
     }
   });
 
+  it('should redact PII', function () {
+    var original = 'Hey it\'s David Johnson with ACME Corp. Give me a call at 555-555-5555';
+    var expected = 'Hey it\'s NAME with COMPANY. Give me a call at PHONE_NUMBER';
+    redactor.redact(original).should.equal(expected);
+  });
+
   it('should replace names', function () {
     redactor.redact('Michael Johnson ran').should.equal('NAME ran');
     redactor.redact('and David Beckham kicked').should.equal('and NAME kicked');
@@ -57,6 +63,14 @@ defineTest('index.js', function (Redactor) {
   it('should replace street addresses', function () {
     redactor.redact('I live at 123 Park Ave Apt 123 New York City, NY 10002').should.equal('I live at STREET_ADDRESS New York City, NY ZIPCODE');
     redactor.redact('my address is 56 N First St CA 90210').should.equal('my address is STREET_ADDRESS CA ZIPCODE');
+  });
+
+  it('should not replace street words in context', function () {
+    verify([
+      'Oh no worries I live right down the street and up the boulevard',
+      'There is no way that I will pay for that circle in court',
+      'I have thought of 1000 ways to finish that drive',
+    ]);
   });
 
   it('should replace usernames and passwords', function () {
@@ -102,12 +116,34 @@ defineTest('index.js', function (Redactor) {
       'they have the best pizza!',
       'thanks for doing that bro',
       'I sincerely thank you for doing the best yours truly.',
-    ])
+    ]);
   });
 
   it('should respect a custom string replacement', function () {
     redactor = Redactor({replace: 'REDACTED'});
     redactor.redact('my ip: 10.1.1.235.').should.equal('my ip: REDACTED.');
     redactor.redact('my ip: 10.1.1.235.').should.equal('my ip: REDACTED.');
+  });
+
+  it('should respect a custom function replacement', function () {
+    redactor = Redactor({
+      replace: function (name, defaultReplacement) {
+        if (name === 'creditCardNumber') {
+          return value => 'XXXXXXXXXXXX' + value.slice(12);
+        } else if (name === 'name') {
+          return 'FULL_NAME';
+        } else {
+          return defaultReplacement;
+        }
+      }
+    });
+
+    redactor.redact('my CC is 1234567812345678').should.equal('my CC is XXXXXXXXXXXX5678');
+    redactor.redact('David Johnson lives in 90210').should.equal('FULL_NAME lives in ZIPCODE');
+  });
+
+  it('should accept new patterns', function () {
+    var redactor = Redactor({animal: /\b(cat|dog|cow)s?\b/gi});
+    redactor.redact('I love cats, dogs, and cows').should.equal('I love ANIMAL, ANIMAL, and ANIMAL');
   });
 });
