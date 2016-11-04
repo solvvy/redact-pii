@@ -6,6 +6,7 @@ function error() {
   console.log.apply(console, arguments);
   process.exit(1);
 }
+
 var data = '';
 process.stdin.on('readable', () => {
   var chunk = process.stdin.read();
@@ -16,7 +17,9 @@ process.stdin.on('readable', () => {
 
 
 process.stdin.on('end', function () {
-  var firstLine = data.split('\n')[0];
+  console.log('parsing commit log:\n', data, '\n');
+  var firstLine = data.split('\n').filter(l => l && !l.match(/^\s*Merge/))[0];
+  console.log('evaluating commit message:\t', firstLine);
   if (!firstLine.match(/^\w{7} (feat|fix|docs|chore|ci|style|refactor|test)(\([^)]+\))?: .*/gi)) {
     error('commit message didn\'t match expectation, see cz-conventional-changelog');
   }
