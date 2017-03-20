@@ -40,6 +40,21 @@ defineTest('index.js', function (Redactor) {
     redactor.redact('my card: 1234 5678 8765 4321.').should.equal('my card: CREDIT_CARD_NUMBER.');
     redactor.redact('my 2nd card: 1234-5678-8765-4321.').should.equal('my DIGITSnd card: CREDIT_CARD_NUMBER.');
     redactor.redact('my 3rd card: 1234567887654321.').should.equal('my DIGITSrd card: CREDIT_CARD_NUMBER.');
+
+    redactor.redact('my AMEX card: 1234 567890 12345.').should.equal('my AMEX card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my AMEX 2nd card: 1234-567890-12345.').should.equal('my AMEX DIGITSnd card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my AMEX 3rd card: 123456789012345.').should.equal('my AMEX DIGITSrd card: CREDIT_CARD_NUMBER.');
+    
+    redactor.redact('my DINERS card: 1234 567890 1234.').should.equal('my DINERS card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my DINERS 2nd card: 1234-567890-1234.').should.equal('my DINERS DIGITSnd card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my DINERS 3rd card: 12345678901234.').should.equal('my DINERS DIGITSrd card: CREDIT_CARD_NUMBER.');
+  });
+
+  it('should replace ssn', function () {
+    redactor.redact('my ssn: 123 45 6789.').should.equal('my ssn: SSN.');
+    redactor.redact('my ssn: 123-45-6789.').should.equal('my ssn: SSN.');
+    redactor.redact('my ssn: 123.45.6789.').should.equal('my ssn: SSN.');
+    redactor.redact('my ssn: 123456789.').should.equal('my ssn: SSN.');
   });
 
   it('should replace phone numbers', function () {
