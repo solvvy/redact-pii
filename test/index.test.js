@@ -161,4 +161,9 @@ defineTest('index.js', function (Redactor) {
     var redactor = Redactor({animal: /\b(cat|dog|cow)s?\b/gi});
     redactor.redact('I love cats, dogs, and cows').should.equal('I love ANIMAL, ANIMAL, and ANIMAL');
   });
+
+  it('should replace digits', function () {
+    redactor.redact('codeA: 123, codeB: 678').should.equal('codeA: DIGITS, codeB: DIGITS');
+  });
+
 });
