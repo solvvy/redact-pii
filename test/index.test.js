@@ -25,15 +25,16 @@ defineTest('index.js', function (Redactor) {
 
   it('should redact PII', function () {
     var original = 'Hey it\'s David Johnson with ACME Corp. Give me a call at 555-555-5555';
-    var expected = 'Hey it\'s NAME with COMPANY. Give me a call at PHONE_NUMBER';
+    var expected = 'Hey it\'s NAME NAME with COMPANY. Give me a call at PHONE_NUMBER';
     redactor.redact(original).should.equal(expected);
   });
 
   it('should replace names', function () {
-    redactor.redact('Michael Johnson ran').should.equal('NAME ran');
-    redactor.redact('and David Beckham kicked').should.equal('and NAME kicked');
-    redactor.redact('George said to Michelle Johnson, "totes"').should.equal('NAME said to NAME, "totes"');
-    redactor.redact('Simon Ross, Rachel Todd, and Joesph Bennett went to the store').should.equal('NAME, NAME, and NAME went to the store');
+    redactor.redact('My name is Emma').should.equal('My name is NAME');
+    redactor.redact('Michael Johnson ran').should.equal('NAME NAME ran');
+    redactor.redact('and David Beckham kicked').should.equal('and NAME NAME kicked');
+    redactor.redact('George said to Michelle Johnson, "totes"').should.equal('NAME said to NAME NAME, "totes"');
+    redactor.redact('Simon Ross, Rachel Todd, and Joesph Bennett went to the store').should.equal('NAME NAME, NAME NAME, and NAME NAME went to the store');
   });
 
   it('should replace credit card numbers', function () {
@@ -154,7 +155,7 @@ defineTest('index.js', function (Redactor) {
     });
 
     redactor.redact('my CC is 1234567812345678').should.equal('my CC is XXXXXXXXXXXXDIGITS');
-    redactor.redact('David Johnson lives in 90210').should.equal('FULL_NAME lives in ZIPCODE');
+    redactor.redact('David Johnson lives in 90210').should.equal('FULL_NAME FULL_NAME lives in ZIPCODE');
   });
 
   it('should accept new patterns', function () {
