@@ -167,4 +167,18 @@ defineTest('index.js', function (Redactor) {
     redactor.redact('codeA: 123, codeB: 678').should.equal('codeA: DIGITS, codeB: DIGITS');
   });
 
+  it('should replace URLs', function () {
+    redactor.redact('My homepage is http://example.com').should.equal('My homepage is URL');
+    redactor.redact('ip http://127.0.01/example.html test').should.equal('ip URL test');
+    redactor.redact('custom protocol myapp://example.com').should.equal('custom protocol URL');
+    redactor.redact('Reset password url is https://example.com/reset/password/12345').should.equal('Reset password url is URL');
+    redactor.redact('complex http://user@pass:example.com:8080/reset/password/12345?foo=bar&hi=there#/app works?').should.equal('complex URL works?');
+    redactor.redact('before http://www.example.com after').should.equal('before URL after');
+    redactor.redact('before http://www.example.com:123 after').should.equal('before URL after');
+    redactor.redact('before http://www.example.com/foo after').should.equal('before URL after');
+    redactor.redact('before http://www.example.com/foo/bar after').should.equal('before URL after');
+    redactor.redact('before http://www.example.com/foo/bar?foo=bar after').should.equal('before URL after');
+    redactor.redact('before http://www.example.com/foo/bar?foo=bar#/foo/bar after').should.equal('before URL after');
+  });
+
 });
