@@ -169,7 +169,7 @@ defineTest('index.js', function (Redactor) {
 
   it('should replace URLs', function () {
     redactor.redact('My homepage is http://example.com').should.equal('My homepage is URL');
-    redactor.redact('ip http://127.0.01/example.html test').should.equal('ip URL test');
+    redactor.redact('ip http://127.0.0.1/example.html test').should.equal('ip URL test');
     redactor.redact('custom protocol myapp://example.com').should.equal('custom protocol URL');
     redactor.redact('Reset password url is https://example.com/reset/password/12345').should.equal('Reset password url is URL');
     redactor.redact('complex http://user@pass:example.com:8080/reset/password/12345?foo=bar&hi=there#/app works?').should.equal('complex URL works?');
@@ -179,6 +179,8 @@ defineTest('index.js', function (Redactor) {
     redactor.redact('before http://www.example.com/foo/bar after').should.equal('before URL after');
     redactor.redact('before http://www.example.com/foo/bar?foo=bar after').should.equal('before URL after');
     redactor.redact('before http://www.example.com/foo/bar?foo=bar#/foo/bar after').should.equal('before URL after');
+    redactor.redact('before http://www.example.com/sub/dir/ after').should.equal('before URL after');
+    redactor.redact('My homepage is http://example.com\nAnd that is that.').should.equal('My homepage is URL\nAnd that is that.');
   });
 
 });
