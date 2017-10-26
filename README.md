@@ -74,3 +74,11 @@ var redactor = require('redact-pii')({animal: /\b(cat|dog|cow)s?\b/gi});
 redactor.redact('I love cats, dogs, and cows');
 // I love ANIMAL, ANIMAL, and ANIMAL
 ```
+
+### CLI
+
+Add names to the datatset using the following command. The script accepts 2 arguments (first name & last name) with space separated values. Only unique names will be added to the data set.
+
+```bash
+node bin/add-names.js --first michael toni --last smart kent
+```
