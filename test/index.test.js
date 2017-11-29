@@ -25,30 +25,33 @@ defineTest('index.js', function (Redactor) {
 
   it('should redact PII', function () {
     var original = 'Hey it\'s David Johnson with ACME Corp. Give me a call at 555-555-5555';
-    var expected = 'Hey it\'s NAME NAME with COMPANY. Give me a call at PHONE_NUMBER';
+    var expected = 'Hey it\'s David Johnson with ACME Corp. Give me a call at PHONE_NUMBER';
     redactor.redact(original).should.equal(expected);
   });
 
   it('should replace names', function () {
-    redactor.redact('My name is Emma').should.equal('My name is NAME');
-    redactor.redact('Michael Johnson ran').should.equal('NAME NAME ran');
-    redactor.redact('and David Beckham kicked').should.equal('and NAME NAME kicked');
-    redactor.redact('George said to Michelle Johnson, "totes"').should.equal('NAME said to NAME NAME, "totes"');
-    redactor.redact('Simon Ross, Rachel Todd, and Joesph Bennett went to the store').should.equal('NAME NAME, NAME NAME, and NAME NAME went to the store');
+    redactor.redact('here\'s my Cliff. blah blah').should.equal('here\'s my Cliff. blah blah');
+    redactor.redact('here\'s my Clifford. blah blah').should.equal('here\'s my Clifford. blah blah');
+    redactor.redact('Dear Clifford,\n blah blah').should.equal('Dear NAME,\n blah blah');
+    redactor.redact('blah blah\n\n\nthanks,\nAnna\n blah blah').should.equal('blah blah\n\n\nthanks,\nNAME\n blah blah');
+    redactor.redact('blah blah\n\n\nAnna\n blah blah').should.equal('blah blah\n\n\nNAME\n blah blah');
+    redactor.redact('blah blah\n\n\n   Joshua\n blah blah').should.equal('blah blah\n\n\n   NAME\n blah blah');
+    redactor.redact('blah blah\nthanks Joshua.\n blah blah').should.equal('blah blah\nthanks NAME.\n blah blah');
+    redactor.redact('Hi David Johnson,\nHow are you?\n\nthanks Joshua.\n blah blah').should.equal('Hi NAME,\nHow are you?\n\nthanks NAME.\n blah blah');;
   });
 
   it('should replace credit card numbers', function () {
     redactor.redact('my card: 1234 5678 8765 4321.').should.equal('my card: CREDIT_CARD_NUMBER.');
-    redactor.redact('my 2nd card: 1234-5678-8765-4321.').should.equal('my DIGITSnd card: CREDIT_CARD_NUMBER.');
-    redactor.redact('my 3rd card: 1234567887654321.').should.equal('my DIGITSrd card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my 2nd card: 1234-5678-8765-4321.').should.equal('my 2nd card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my 3rd card: 1234567887654321.').should.equal('my 3rd card: CREDIT_CARD_NUMBER.');
 
     redactor.redact('my AMEX card: 1234 567890 12345.').should.equal('my AMEX card: CREDIT_CARD_NUMBER.');
-    redactor.redact('my AMEX 2nd card: 1234-567890-12345.').should.equal('my AMEX DIGITSnd card: CREDIT_CARD_NUMBER.');
-    redactor.redact('my AMEX 3rd card: 123456789012345.').should.equal('my AMEX DIGITSrd card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my AMEX 2nd card: 1234-567890-12345.').should.equal('my AMEX 2nd card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my AMEX 3rd card: 123456789012345.').should.equal('my AMEX 3rd card: CREDIT_CARD_NUMBER.');
     
     redactor.redact('my DINERS card: 1234 567890 1234.').should.equal('my DINERS card: CREDIT_CARD_NUMBER.');
-    redactor.redact('my DINERS 2nd card: 1234-567890-1234.').should.equal('my DINERS DIGITSnd card: CREDIT_CARD_NUMBER.');
-    redactor.redact('my DINERS 3rd card: 12345678901234.').should.equal('my DINERS DIGITSrd card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my DINERS 2nd card: 1234-567890-1234.').should.equal('my DINERS 2nd card: CREDIT_CARD_NUMBER.');
+    redactor.redact('my DINERS 3rd card: 12345678901234.').should.equal('my DINERS 3rd card: CREDIT_CARD_NUMBER.');
   });
 
   it('should replace ssn', function () {
@@ -95,46 +98,6 @@ defineTest('index.js', function (Redactor) {
     redactor.redact('user: thislibrary\npass: 1$d0P3!').should.equal('USERNAME\nPASSWORD');
   });
 
-  it('should replace companies', function () {
-    redactor.redact('my account is for Cool Beans Inc.').should.equal('my account is for COMPANY');
-    redactor.redact('i represent Mumford & Sons Co.').should.equal('i represent COMPANY');
-    redactor.redact('I work for Johnson & Johnson LLC').should.equal('I work for COMPANY');
-  });
-
-  it('should replace salutations', function () {
-    redactor.redact(`Dear Mr. Jones,
-      Thank you for reading this message!
-    `).should.equal(`SALUTATION
-      Thank you for reading this message!
-    `);
-
-    redactor.redact(`Hi John, Jessie, and Jacob,
-      I had a quick question...
-    `).should.equal(`SALUTATION
-      I had a quick question...
-    `);
-  });
-
-  it('should not replace salutation words in context', function () {
-    verify([
-      'hi there how do i change my name?',
-      'so then I said hello to my friend, Jimothy',
-    ]);
-  });
-
-  it('should replace valedictions', function () {
-    redactor.redact('Are we there yet?\nThanks,\nPatrick').should.equal('Are we there yet?\nVALEDICTION');
-    redactor.redact('Hello?\nBest,\nJustin & The Solvvy Team').should.equal('Hello?\nVALEDICTION');
-  });
-
-  it('should not replace valediction words in context', function () {
-    verify([
-      'they have the best pizza!',
-      'thanks for doing that bro',
-      'I sincerely thank you for doing the best yours truly.',
-    ]);
-  });
-
   it('should respect a custom string replacement', function () {
     redactor = Redactor({replace: 'REDACTED'});
     redactor.redact('my ip: 10.1.1.235.').should.equal('my ip: REDACTED.');
@@ -154,8 +117,8 @@ defineTest('index.js', function (Redactor) {
       }
     });
 
-    redactor.redact('my CC is 1234567812345678').should.equal('my CC is XXXXXXXXXXXXDIGITS');
-    redactor.redact('David Johnson lives in 90210').should.equal('FULL_NAME FULL_NAME lives in ZIPCODE');
+    redactor.redact('my CC is 1234567812345678').should.equal('my CC is XXXXXXXXXXXX5678');
+    redactor.redact('Dear David Johnson, he lives in 90210').should.equal('FULL_NAME, he lives in ZIPCODE');
   });
 
   it('should accept new patterns', function () {
@@ -164,7 +127,7 @@ defineTest('index.js', function (Redactor) {
   });
 
   it('should replace digits', function () {
-    redactor.redact('codeA: 123, codeB: 678').should.equal('codeA: DIGITS, codeB: DIGITS');
+    redactor.redact('codeA: 123, codeB: 6789').should.equal('codeA: 123, codeB: DIGITS');
   });
 
   it('should replace URLs', function () {
