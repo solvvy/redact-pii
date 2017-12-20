@@ -41,8 +41,14 @@ defineTest('index.js', function (Redactor) {
     redactor.redact('blah blah\n\n\nAll the best,\n\n--Meg C.\n\nAcme Support').should.equal('blah blah\n\n\nAll the best,\n\n--NAME\n\nAcme Support');
     redactor.redact('blah blah\n\n\nAll the best,\n\n-John\n\nAcme Support').should.equal('blah blah\n\n\nAll the best,\n\n-NAME\n\nAcme Support');
     redactor.redact('blah blah\nthanks Joshua.\n blah blah').should.equal('blah blah\nthanks NAME.\n blah blah');
-    redactor.redact('Hi David Johnson,\nHow are you?\n\nthanks Joshua.\n blah blah').should.equal('Hi NAME,\nHow are you?\n\nthanks NAME.\n blah blah');;
-    redactor.redact('Subject. Hi David Johnson.').should.equal('Subject. Hi NAME.');;
+    redactor.redact('Hi David Johnson,\nHow are you?\n\nthanks Joshua.\n blah blah').should.equal('Hi NAME,\nHow are you?\n\nthanks NAME.\n blah blah');
+    redactor.redact('Subject. Hi David Johnson.').should.equal('Subject. Hi NAME.');
+    redactor.redact('to hearing from you.\n\nAll the best,\n\nAngel\nCustomer Experience\nwww.foo.com').should.equal('to hearing from you.\n\nAll the best,\n\nNAME\nCustomer Experience\nwww.foo.com');
+    redactor.redact('getting this sorted out.\n\nKindest regards,\n\nFoo Bar\nCustomer Experience').should.equal('getting this sorted out.\n\nKindest regards,\n\nNAME\nCustomer Experience');
+    redactor.redact('blah.\n\nAffectionately,\n\nFoo Bar\nblah').should.equal('blah.\n\nAffectionately,\n\nNAME\nblah');
+    redactor.redact('blah.\n\nHappy Meditating!\n\nFoo Bar\nblah').should.equal('blah.\n\nHappy Meditating!\n\nNAME\nblah');
+    redactor.redact('blah.\n\nTake care!\n\nFoo Bar\nblah').should.equal('blah.\n\nTake care!\n\nNAME\nblah');
+    redactor.redact('blah.\n\nHave a wonderful weekend.\n\nFoo Bar\nblah').should.equal('blah.\n\nHave a wonderful weekend.\n\nNAME\nblah');
   });
 
   it('should replace credit card numbers', function () {
