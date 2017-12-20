@@ -42,6 +42,7 @@ defineTest('index.js', function (Redactor) {
     redactor.redact('blah blah\n\n\nAll the best,\n\n-John\n\nAcme Support').should.equal('blah blah\n\n\nAll the best,\n\n-NAME\n\nAcme Support');
     redactor.redact('blah blah\nthanks Joshua.\n blah blah').should.equal('blah blah\nthanks NAME.\n blah blah');
     redactor.redact('Hi David Johnson,\nHow are you?\n\nthanks Joshua.\n blah blah').should.equal('Hi NAME,\nHow are you?\n\nthanks NAME.\n blah blah');;
+    redactor.redact('Subject. Hi David Johnson.').should.equal('Subject. Hi NAME.');;
   });
 
   it('should replace credit card numbers', function () {
