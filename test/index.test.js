@@ -35,7 +35,11 @@ defineTest('index.js', function (Redactor) {
     redactor.redact('Dear Clifford,\n blah blah').should.equal('Dear NAME,\n blah blah');
     redactor.redact('blah blah\n\n\nthanks,\nAnna\n blah blah').should.equal('blah blah\n\n\nthanks,\nNAME\n blah blah');
     redactor.redact('blah blah\n\n\nAnna\n blah blah').should.equal('blah blah\n\n\nNAME\n blah blah');
+    redactor.redact('blah blah\n\n\nAcme Support\n blah blah').should.equal('blah blah\n\n\nAcme Support\n blah blah');
     redactor.redact('blah blah\n\n\n   Joshua\n blah blah').should.equal('blah blah\n\n\n   NAME\n blah blah');
+    redactor.redact('blah blah\n\n\nAll the best,\n\n-Acme Support\n\nfoo bar').should.equal('blah blah\n\n\nAll the best,\n\n-NAME\n\nfoo bar');
+    redactor.redact('blah blah\n\n\nAll the best,\n\n--Meg C.\n\nAcme Support').should.equal('blah blah\n\n\nAll the best,\n\n--NAME\n\nAcme Support');
+    redactor.redact('blah blah\n\n\nAll the best,\n\n-John\n\nAcme Support').should.equal('blah blah\n\n\nAll the best,\n\n-NAME\n\nAcme Support');
     redactor.redact('blah blah\nthanks Joshua.\n blah blah').should.equal('blah blah\nthanks NAME.\n blah blah');
     redactor.redact('Hi David Johnson,\nHow are you?\n\nthanks Joshua.\n blah blah').should.equal('Hi NAME,\nHow are you?\n\nthanks NAME.\n blah blah');;
   });
@@ -109,7 +113,7 @@ defineTest('index.js', function (Redactor) {
       replace: function (name, defaultReplacement) {
         if (name === 'creditCardNumber') {
           return value => 'XXXXXXXXXXXX' + value.slice(12);
-        } else if (name === 'name') {
+        } else if (name === 'greetOrClose') {
           return 'FULL_NAME';
         } else {
           return defaultReplacement;
@@ -118,7 +122,7 @@ defineTest('index.js', function (Redactor) {
     });
 
     redactor.redact('my CC is 1234567812345678').should.equal('my CC is XXXXXXXXXXXX5678');
-    redactor.redact('Dear David Johnson, he lives in 90210').should.equal('FULL_NAME, he lives in ZIPCODE');
+    redactor.redact('Dear David Johnson, he lives in 90210').should.equal('Dear FULL_NAME, he lives in ZIPCODE');
   });
 
   it('should accept new patterns', function () {
