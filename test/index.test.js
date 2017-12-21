@@ -30,14 +30,28 @@ defineTest('index.js', function (Redactor) {
   });
 
   it('should replace names', function () {
+    redactor.redact('blah blah\nThis is very important.').should.equal('blah blah\nThis is very important.');
+    redactor.redact('blah blah\n\nThank you ..Risemamy McCrubben').should.equal('blah blah\n\nThank you ..NAME');
+    redactor.redact('blah blah. Thanks -Jon').should.equal('blah blah. Thanks -NAME');
     redactor.redact('here\'s my Cliff. blah blah').should.equal('here\'s my Cliff. blah blah');
     redactor.redact('here\'s my Clifford. blah blah').should.equal('here\'s my Clifford. blah blah');
     redactor.redact('Dear Clifford,\n blah blah').should.equal('Dear NAME,\n blah blah');
     redactor.redact('blah blah\n\n\nthanks,\nAnna\n blah blah').should.equal('blah blah\n\n\nthanks,\nNAME\n blah blah');
     redactor.redact('blah blah\n\n\nAnna\n blah blah').should.equal('blah blah\n\n\nNAME\n blah blah');
+    redactor.redact('blah blah\n\n\nAcme Support\n blah blah').should.equal('blah blah\n\n\nAcme Support\n blah blah');
     redactor.redact('blah blah\n\n\n   Joshua\n blah blah').should.equal('blah blah\n\n\n   NAME\n blah blah');
+    redactor.redact('blah blah\n\n\nAll the best,\n\n-Acme Support\n\nfoo bar').should.equal('blah blah\n\n\nAll the best,\n\n-NAME\n\nfoo bar');
+    redactor.redact('blah blah\n\n\nAll the best,\n\n--Meg C.\n\nAcme Support').should.equal('blah blah\n\n\nAll the best,\n\n--NAME\n\nAcme Support');
+    redactor.redact('blah blah\n\n\nAll the best,\n\n-John\n\nAcme Support').should.equal('blah blah\n\n\nAll the best,\n\n-NAME\n\nAcme Support');
     redactor.redact('blah blah\nthanks Joshua.\n blah blah').should.equal('blah blah\nthanks NAME.\n blah blah');
-    redactor.redact('Hi David Johnson,\nHow are you?\n\nthanks Joshua.\n blah blah').should.equal('Hi NAME,\nHow are you?\n\nthanks NAME.\n blah blah');;
+    redactor.redact('Hi David Johnson,\nHow are you?\n\nthanks Joshua.\n blah blah').should.equal('Hi NAME,\nHow are you?\n\nthanks NAME.\n blah blah');
+    redactor.redact('Subject. Hi David Johnson.').should.equal('Subject. Hi NAME.');
+    redactor.redact('to hearing from you.\n\nAll the best,\n\nAngel\nCustomer Experience\nwww.foo.com').should.equal('to hearing from you.\n\nAll the best,\n\nNAME\nCustomer Experience\nwww.foo.com');
+    redactor.redact('getting this sorted out.\n\nKindest regards,\n\nFoo Bar\nCustomer Experience').should.equal('getting this sorted out.\n\nKindest regards,\n\nNAME\nCustomer Experience');
+    redactor.redact('blah.\n\nAffectionately,\n\nFoo Bar\nblah').should.equal('blah.\n\nAffectionately,\n\nNAME\nblah');
+    redactor.redact('blah.\n\nHappy Meditating!\n\nFoo Bar\nblah').should.equal('blah.\n\nHappy Meditating!\n\nNAME\nblah');
+    redactor.redact('blah.\n\nTake care!\n\nFoo Bar\nblah').should.equal('blah.\n\nTake care!\n\nNAME\nblah');
+    redactor.redact('blah.\n\nHave a wonderful weekend.\n\nFoo Bar\nblah').should.equal('blah.\n\nHave a wonderful weekend.\n\nNAME\nblah');
   });
 
   it('should replace credit card numbers', function () {
@@ -109,7 +123,7 @@ defineTest('index.js', function (Redactor) {
       replace: function (name, defaultReplacement) {
         if (name === 'creditCardNumber') {
           return value => 'XXXXXXXXXXXX' + value.slice(12);
-        } else if (name === 'name') {
+        } else if (name === 'greetOrClose') {
           return 'FULL_NAME';
         } else {
           return defaultReplacement;
@@ -118,7 +132,7 @@ defineTest('index.js', function (Redactor) {
     });
 
     redactor.redact('my CC is 1234567812345678').should.equal('my CC is XXXXXXXXXXXX5678');
-    redactor.redact('Dear David Johnson, he lives in 90210').should.equal('FULL_NAME, he lives in ZIPCODE');
+    redactor.redact('Dear David Johnson, he lives in 90210').should.equal('Dear FULL_NAME, he lives in ZIPCODE');
   });
 
   it('should accept new patterns', function () {
