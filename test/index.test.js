@@ -30,8 +30,9 @@ defineTest('index.js', function (Redactor) {
   });
 
   it('should replace names', function () {
-    redactor.redact('blah blah\n\nThank you ..Risemamy McCrubben').should.equal('blah blah\n\nThank you ..NAME');;
-    redactor.redact('blah blah. Thanks -Jon').should.equal('blah blah. Thanks -NAME');;
+    redactor.redact('blah blah\nThis is very important.').should.equal('blah blah\nThis is very important.');
+    redactor.redact('blah blah\n\nThank you ..Risemamy McCrubben').should.equal('blah blah\n\nThank you ..NAME');
+    redactor.redact('blah blah. Thanks -Jon').should.equal('blah blah. Thanks -NAME');
     redactor.redact('here\'s my Cliff. blah blah').should.equal('here\'s my Cliff. blah blah');
     redactor.redact('here\'s my Clifford. blah blah').should.equal('here\'s my Clifford. blah blah');
     redactor.redact('Dear Clifford,\n blah blah').should.equal('Dear NAME,\n blah blah');
