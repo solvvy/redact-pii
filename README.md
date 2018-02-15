@@ -1,3 +1,7 @@
+This repository has moved to [gitlab](https://gitlab.com/solvvy/redact-pii).
+Please clone and fork from there. All future work will occur in gitlab and
+will be mirrored here.
+
 # redact-pii
 [![NPM Package](https://badge.fury.io/js/redact-pii.svg)](https://www.npmjs.com/package/redact-pii)
 [![Build Status](https://travis-ci.org/solvvy/redact-pii.svg?branch=master)](https://travis-ci.org/solvvy/redact-pii)
