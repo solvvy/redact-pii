@@ -1,25 +1,24 @@
 {
   "name": "redact-pii",
-  "version": "0.0.0",
+  "version": "1.3.4",
   "description": "Remove personally identifiable information from text.",
   "main": "./lib/index.js",
   "scripts": {
     "test": "xo ./lib/**/*.js && mocha -s 20 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js",
     "test:lint": "xo ./lib/**/*.js",
     "test:coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- --require test/bootstrap test/*.test.js test/**/*.test.js",
-    "test:watch": "mocha --watch --reporter dot --require test/bootstrap test/*.test.js test/**/*.test.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "test:watch": "mocha --watch --reporter dot --require test/bootstrap test/*.test.js test/**/*.test.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/solvvy/redact-pii.git"
+    "url": "https://gitlab.com/solvvy/redact-pii.git"
   },
   "author": "Patrick Hulce <patrick.hulce@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/solvvy/redact-pii/issues"
+    "url": "https://gitlab.com/solvvy/redact-pii/issues"
   },
-  "homepage": "https://github.com/solvvy/redact-pii#readme",
+  "homepage": "https://gitlab.com/solvvy/redact-pii#readme",
   "xo": {
     "env": [
       "browser",
@@ -57,21 +56,14 @@
       ]
     }
   },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
   "dependencies": {
     "lodash": "^4.16.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "cz-conventional-changelog": "^1.2.0",
     "istanbul": "^0.4.5",
     "json-loader": "^0.5.7",
     "mocha": "^3.1.2",
-    "semantic-release": "^4.3.5",
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",
     "xo": "^0.17.0"
