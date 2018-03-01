@@ -9,7 +9,7 @@ will be mirrored here.
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![Dependencies](https://david-dm.org/solvvy/redact-pii.svg)](https://david-dm.org/solvvy/redact-pii)
 
-Remove personally identifiable information from text.
+Remove personally identifiable information from text.  This library should work on server or in browser (at least ie11+ compatibility).
 
 ## Usage
 ```
