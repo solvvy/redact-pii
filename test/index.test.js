@@ -52,6 +52,8 @@ defineTest('index.js', function (Redactor) {
     redactor.redact('blah.\n\nHappy Meditating!\n\nFoo Bar\nblah').should.equal('blah.\n\nHappy Meditating!\n\nNAME\nblah');
     redactor.redact('blah.\n\nTake care!\n\nFoo Bar\nblah').should.equal('blah.\n\nTake care!\n\nNAME\nblah');
     redactor.redact('blah.\n\nHave a wonderful weekend.\n\nFoo Bar\nblah').should.equal('blah.\n\nHave a wonderful weekend.\n\nNAME\nblah');
+
+    // redactor.redact('Subject. Hi 李 张.').should.equal('Subject. Hi NAME.');
   });
 
   it('should replace credit card numbers', function () {
@@ -62,7 +64,7 @@ defineTest('index.js', function (Redactor) {
     redactor.redact('my AMEX card: 1234 567890 12345.').should.equal('my AMEX card: CREDIT_CARD_NUMBER.');
     redactor.redact('my AMEX 2nd card: 1234-567890-12345.').should.equal('my AMEX 2nd card: CREDIT_CARD_NUMBER.');
     redactor.redact('my AMEX 3rd card: 123456789012345.').should.equal('my AMEX 3rd card: CREDIT_CARD_NUMBER.');
-    
+
     redactor.redact('my DINERS card: 1234 567890 1234.').should.equal('my DINERS card: CREDIT_CARD_NUMBER.');
     redactor.redact('my DINERS 2nd card: 1234-567890-1234.').should.equal('my DINERS 2nd card: CREDIT_CARD_NUMBER.');
     redactor.redact('my DINERS 3rd card: 12345678901234.').should.equal('my DINERS 3rd card: CREDIT_CARD_NUMBER.');
