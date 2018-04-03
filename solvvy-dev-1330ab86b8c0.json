@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "solvvy-dev",
+  "private_key_id": "1330ab86b8c0b6ab82d28e1d2f2cce994564d8c5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCqnXe/8Js3B+9A\ngFlxyd1sthxar9U+7vltq2VQVb6f2CriGCdfRTvrVnxvAKTx8+49T5LcPCXcZOjG\nDwxGIfQNuZrJjQrlknfjffsfgf7gwsF/vqwX7pFMLsu3uhWjGCxoxfTbB8rRfYlw\nhNZL7NAMZt1HLbgMwYvw2SfWA5DqUHxnMWg/syW8WBMm0l4xgSbxJhv36HZQIj/6\nB4LwE/EBqZiTkSX+DKE93RnIgoFU7wpCMd160pe4rLuRaMm2dLiwWRtg+lypKP2M\naQqqfeU/iZuIrggiHQF2CO+dT0JzIJ1f4ZF9Fwa3pBm7McldrXpfSr2IFQ+9jhkk\nckKpTOWrAgMBAAECggEADnJ+GOk5Y3wPBOG5cTq8Pr/e/8ji4EzhHynDzv0rwqJN\n405TSyx0KfXtXILr9LcIpfVuhKqtNA/xbBALJIcsgNsGIeoJEa6I62EYGi9qU0L6\nmqQdM3uWnyJZSsn9mg1qeUbF+KQcxwd/02DUOqKnbV1qgGP9MUtUW8Uvq94qb8TU\nlIqmxw8nHVxF6OY2+zVkNeqsSjhiBQsMzFCVsIKGqrBGIjTQvW+H9Losphf3DXWe\nSg2bnkIH1ATez10bx5UCHuf27zMnLFWA2x9ZU52ofgJHsOHSp8LAiV56lege33Ls\n30PpLZHXwsonaFu6KeXKT+quq3j7yjdpXXCVh/iHqQKBgQDV7//k6iU6WRGbStjl\n0dgAYzRS/7czQm+0FNChQJ5R4QfENoHqR8FIpB24DxsOOhNl0s3+RlcEx8r0fzvZ\nidyGfUGxeed/LsDsw9TbuRQ6eac39aYUYel7CdYftmYHkM2zuHSIUz+JzVMLa6O9\nMihvq78bIS/vs2xTI0k7yKLYeQKBgQDMKPIdg9OFpZe8vzTeUzwIfIM5ar+/Tw+T\nVB3yrhazTLB2ByrSVsThnmCuloY8HwB3RAJkBTE7JxlTjMsoj0bnuec86wOIXk4V\n4AbRyNeFeAzL6d7k/DiV8J1gCpVURo0dQ9c1DquImmxDf5flNQw3h8qHbn/baVvN\nNSysKOyuQwKBgQCrwH/JwYidrUALUi2LY8prlTk+oPjs+BtBkaxkqMHxrh1UEwZ9\nlZnAvbD2QXpRE6LbDkA+MS5PMi7n1vWvkZQvjIOe/eUyH9DWw+kxdQaeY2gx7s6k\ncm7FToJO91o2HLRn4l/7ygmqkeJnusS7cXcxH8rO9vfLElqW7C8xBcRm0QKBgQCq\nTEFhw1POuIlw5SHpjg6WmZ4wZ84Ye49nepQcmYDQAVl0qpfaqoxCEwVcvKyuO8H8\nulswKXCeggfLPLc+Vv1zUAwGMZdZyihicOPfXCQC7lfmRGgsJAPjdrkfotRbXxpY\n3f0HAfytzvod97GxfOV68KdM/yxhzmnIK+HenaiH1wKBgQCphoQWFsSLMxtWniZD\n3VWMF5x430+1DC84gNFOgVPwlBDgmSKPsruzH+GajBiVAeeee6WWgYQ63swmEApU\nk1cKOaGAm3xyJ/UM4kqZm4NXfLJfzDECDOPM4z3HxhxHCV5rKgTvO2g1Y+W0UBht\n4j3olahjVFnD5vwpM9cJ2PMHKA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "solvvy-data-loss-prevention@solvvy-dev.iam.gserviceaccount.com",
+  "client_id": "118352643049576658806",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/solvvy-data-loss-prevention%40solvvy-dev.iam.gserviceaccount.com"
+}
