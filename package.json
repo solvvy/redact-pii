@@ -4,7 +4,7 @@
   "description": "Remove personally identifiable information from text.",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "xo ./lib/**/*.js && mocha -s 20 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js",
+    "test": "xo ./lib/**/*.js && mocha -s 20 --timeout 10000 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js",
     "test:lint": "xo ./lib/**/*.js",
     "test:coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- --require test/bootstrap test/*.test.js test/**/*.test.js",
     "test:watch": "mocha --watch --reporter dot --require test/bootstrap test/*.test.js test/**/*.test.js"
@@ -57,7 +57,8 @@
     }
   },
   "dependencies": {
-    "lodash": "^4.16.6"
+    "lodash": "^4.16.6",
+    "@google-cloud/dlp": "^0.3.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
