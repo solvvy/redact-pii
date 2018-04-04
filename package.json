@@ -57,8 +57,8 @@
     }
   },
   "dependencies": {
-    "lodash": "^4.16.6",
-    "@google-cloud/dlp": "^0.3.0"
+    "@google-cloud/dlp": "^0.3.0",
+    "lodash": "^4.16.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -67,6 +67,7 @@
     "mocha": "^3.1.2",
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",
-    "xo": "^0.17.0"
+    "xo": "^0.17.0",
+    "rewire": "^3.0.2"
   }
 }
