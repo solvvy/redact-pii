@@ -88,5 +88,5 @@ To generate the key file, navigate to https://console.cloud.google.com/home/dash
 
 Then in API's and Services > Library, search for Data Loss Prevention API and enable it for your project.
 
-To generate the key file, navigate to API's and Services > Credentials, Click "Create Credentials" and choose a service account; Create a new service account(or use any unused service account if you have one) and type=json and create the key. Place the contents of this key in `~/.redact-pii/google-account-placeholder-key.json` OR place your key in `~/.redact-pii/<your-key>` and update the name in `dlpwrapper.js` to `your-key`. 
+To generate the key file, navigate to API's and Services > Credentials, Click "Create Credentials" and choose a service account; Create a new service account(or use any unused service account if you have one) and type=json and create the key. Place the contents of this key in `~/.redact-pii/google-account-placeholder-key.json` OR place your key in `~/.redact-pii/<your-key>` and update the name in `dlpwrapper.js` to `your-key`.
 

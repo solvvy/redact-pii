@@ -376,4 +376,20 @@ defineTest('index.js', function (Redactor) {
       });
     });
   });
+
+  it('should redact non english text(only online mode)', function () {
+    if(dlpWrapper.enable){
+      return redactor.redact('我的名字是王').then(res => {
+        assert.equal(res, '我的名字是王');
+      }).then(() => {
+        return redactor.redact('我的卡号是1234-5678-9876-5432').then(res => {
+          assert.equal(res, '我的卡号是CREDIT_CARD_NUMBER')
+        })
+      }).then(() => {
+        return redactor.redact('我的电话是 4443332343').then(res => {
+          assert.equal(res, '我的电话是 PHONE_NUMBER')
+        })
+      });
+    } else return Promise.resolve(true)
+  })
 });
