@@ -1,6 +1,7 @@
 defineTest('index.js', function (Redactor) {
   let redactor = Redactor();
   const assert = require('chai').assert;
+  const dlpWrapper = require('../lib/dlpwrapper.js');
 
   function verify(items) {
     items.forEach(function (item) {
@@ -44,7 +45,9 @@ defineTest('index.js', function (Redactor) {
     let original = 'Hey it\'s David Johnson with ACME Corp. Give me a call at 555-555-5555';
     let expected = 'Hey it\'s David Johnson with ACME Corp. Give me a call at PHONE_NUMBER';
     return redactor.redact(original).then(res => {
-      assert.equal(res, expected);
+      dlpWrapper.enable ?
+        assert.equal(res, 'Hey it\'s PERSON_NAME with ACME Corp. Give me a call at PHONE_NUMBER') :
+        assert.equal(res, 'Hey it\'s David Johnson with ACME Corp. Give me a call at PHONE_NUMBER');
     });
   });
 
@@ -61,11 +64,15 @@ defineTest('index.js', function (Redactor) {
       });
     }).then(() => {
       return redactor.redact('here\'s my Cliff. blah blah').then(res => {
-        assert.equal(res, 'here\'s my Cliff. blah blah');
+        dlpWrapper.enable ?
+          assert.equal(res, 'here\'s my PERSON_NAME. blah blah') :
+          assert.equal(res, 'here\'s my Cliff. blah blah');
       });
     }).then(() => {
       return redactor.redact('here\'s my Clifford. blah blah').then(res => {
-        assert.equal(res, 'here\'s my Clifford. blah blah');
+        dlpWrapper.enable ?
+          assert.equal(res, 'here\'s my PERSON_NAME. blah blah') :
+          assert.equal(res, 'here\'s my Clifford. blah blah');
       });
     }).then(() => {
       return redactor.redact('Dear Clifford,\n blah blah').then(res => {
@@ -244,10 +251,14 @@ defineTest('index.js', function (Redactor) {
 
   it('should replace street addresses', function () {
     return redactor.redact('I live at 123 Park Ave Apt 123 New York City, NY 10002').then(res => {
-      assert.equal(res, 'I live at STREET_ADDRESS New York City, NY ZIPCODE');
+      dlpWrapper.enable ?
+        assert.equal(res, 'I live at STREET_ADDRESS US_STATE City, LOCATION ZIPCODE') :
+        assert.equal(res, 'I live at STREET_ADDRESS New York City, NY ZIPCODE');
     }).then(() => {
       return redactor.redact('my address is 56 N First St CA 90210').then(res => {
-        assert.equal(res, 'my address is STREET_ADDRESS CA ZIPCODE');
+        dlpWrapper.enable ?
+          assert.equal(res, 'my address is STREET_ADDRESS LOCATION ZIPCODE') :
+          assert.equal(res, 'my address is STREET_ADDRESS CA ZIPCODE');
       });
     });
   });
