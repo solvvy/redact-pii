@@ -82,11 +82,11 @@ redactor.redact('I love cats, dogs, and cows');
 
 ### Additional Redaction with Google's Data Loss Prevention API
 
-In addition to custom redaction, the request is also forwarded to Google's Redactor a.k.a [Data Loss Prevention API](https://cloud.google.com/dlp/). To enable redaction by Google's API, in `dlpwrapper.js`, set the option enable to `true`(defaulted to false) and substitute in place of `google-account-placeholder-key` in `dlpwrapper.js`. You can set the option to timeout (defaulted to 1.5s) to bypass through the google API in case the service is too slow for your needs.
+In addition to custom redaction, the request is also forwarded to Google's Redactor a.k.a [Data Loss Prevention API](https://cloud.google.com/dlp/). To enable redaction by Google's API, in `dlpwrapper.js`, set the option enable to `true`(defaulted to false) and substitute in place of `google-account-placeholder-key` in your home directory (at `~/.redact-pii/google-account-placeholder-key.json`) in `dlpwrapper.js`. You can set the option to timeout (defaulted to 1.5s) to bypass through the google API in case the service is too slow for your needs.
 
 To generate the key file, navigate to https://console.cloud.google.com/home/dashboard and select your appropriate project(make sure the name of the project is same as in `dlpwrapper.js`).
 
 Then in API's and Services > Library, search for Data Loss Prevention API and enable it for your project.
 
-To generate the key file, navigate to API's and Services > Credentials, Click "Create Credentials" and choose a service account; Create a new service account(or use any unused service account if you have one) and type=json and create the key. Place this key as a substitute to `google-account-placeholder-key.json` and update the name in `dlpwrapper.js`.
+To generate the key file, navigate to API's and Services > Credentials, Click "Create Credentials" and choose a service account; Create a new service account(or use any unused service account if you have one) and type=json and create the key. Place the contents of this key in `~/.redact-pii/google-account-placeholder-key.json` OR place your key in `~/.redact-pii/<your-key>` and update the name in `dlpwrapper.js` to `your-key`. 
 
