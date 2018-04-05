@@ -1,5 +1,5 @@
-var chai = require('chai');
-var sinon = require('sinon');
+let chai = require('chai');
+let sinon = require('sinon');
 chai.should();
 
 chai.use(require('sinon-chai'));
