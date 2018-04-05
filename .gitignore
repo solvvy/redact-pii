@@ -1,3 +1,6 @@
 node_modules/
 coverage/
 npm-debug.log
+
+# Key file for calling google API's
+solvvy-dev-1330ab86b8c0.json
