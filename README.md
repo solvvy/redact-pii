@@ -18,9 +18,22 @@ npm install redact-pii
 
 ```js
 var redactor = require('redact-pii')();
-var redacted = redactor.redact('Hi David Johnson, Please give me a call at 555-555-5555');
-// Hi NAME, Please give me a call at PHONE_NUMBER
+redactor.redact('Hi David Johnson, Please give me a call at 555-555-5555').then(res => {
+    console.log(res);
+    // Hi NAME, Please give me a call at PHONE_NUMBER
+});
 ```
+
+There is also an option to forward the requests to use Google's [Data Loss Prevention API](https://cloud.google.com/dlp/). To enable this option, place the key file at `~/redact-pii/google-account-placeholder-key.json` and pass the option in the constructor i.e
+
+```js
+var redactor = require('redact-pii')({enableOnline : true});
+redactor.redact('我的卡号是1234-5678-9876-5432').then(res => {
+    console.log(res);
+    //我的卡号是CREDIT_CARD_NUMBER
+});
+```
+This redacts of an exhaustive list of languages (Chinese, German,etc) and exhaustive list of [PII fields](https://cloud.google.com/dlp/docs/infotypes-reference)
 
 ## API
 
