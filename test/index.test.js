@@ -43,13 +43,22 @@ defineTest('index.js', function (Redactor) {
     }
   });
 
+  it('should be speedy even with lots of newlines', function (done) {
+    this.timeout(100);
+
+    let text = 'foo\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nbar';
+    redactor.redact(text).then(function (res) {
+      assert.equal(res, text);
+      done();
+    });
+  });
+
   it('should redact PII', function () {
     let original = 'Hey it\'s David Johnson with ACME Corp. Give me a call at 555-555-5555';
-    let expected = 'Hey it\'s David Johnson with ACME Corp. Give me a call at PHONE_NUMBER';
     return redactor.redact(original).then(res => {
       useGoogleApi ?
         assert.equal(res, 'Hey it\'s PERSON_NAME with ACME Corp. Give me a call at PHONE_NUMBER') :
-        assert.equal(res, 'Hey it\'s David Johnson with ACME Corp. Give me a call at PHONE_NUMBER');
+        assert.equal(res, 'Hey it\'s PERSON_NAME with ACME Corp. Give me a call at PHONE_NUMBER');
     });
   });
 
@@ -74,7 +83,7 @@ defineTest('index.js', function (Redactor) {
       return redactor.redact('here\'s my Clifford. blah blah').then(res => {
         useGoogleApi ?
           assert.equal(res, 'here\'s my PERSON_NAME. blah blah') :
-          assert.equal(res, 'here\'s my Clifford. blah blah');
+          assert.equal(res, 'here\'s my PERSON_NAME. blah blah');
       });
     }).then(() => {
       return redactor.redact('Dear Clifford,\n blah blah').then(res => {
