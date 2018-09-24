@@ -24,10 +24,10 @@ redactor.redact('Hi David Johnson, Please give me a call at 555-555-5555').then(
 });
 ```
 
-There is also an option to forward the requests to use Google's [Data Loss Prevention API](https://cloud.google.com/dlp/). To enable this option, place the key file at `~/redact-pii/google-account-placeholder-key.json` and pass the option in the constructor i.e
+There is also an option to forward the requests to use Google's [Data Loss Prevention API](https://cloud.google.com/dlp/). To enable this option, replace client email and private key with the appropriate values in the below example and pass the option in the constructor i.e
 
 ```js
-var redactor = require('redact-pii')({enableOnline : true});
+var redactor = require('redact-pii')({enableOnline : true, credentials : {client_email: 'client_email', private_key: 'api_key'}});
 redactor.redact('我的卡号是1234-5678-9876-5432').then(res => {
     console.log(res);
     //我的卡号是CREDIT_CARD_NUMBER
