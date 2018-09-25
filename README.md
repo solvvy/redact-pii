@@ -103,3 +103,10 @@ Then in API's and Services > Library, search for Data Loss Prevention API and en
 
 To generate the key file, navigate to API's and Services > Credentials, Click "Create Credentials" and choose a service account; Create a new service account(or use any unused service account if you have one) and type=json and create the key. Place the contents of this key in `~/.redact-pii/google-account-placeholder-key.json` OR place your key in `~/.redact-pii/<your-key>` and update the name in `dlpwrapper.js` to `your-key`.
 
+### Debug
+To run the test cases in Intellij, add this to the run configuration  
+Working directory: ~/Work/Code/redact-pii/  
+Javascript file: node_modules/mocha/bin/mocha  
+Application parameters: xo ./lib/**/*.js && mocha -s 20 --timeout 10000 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js
+
+Application parameters: xo --inspect-brk ./lib/**/*.js && mocha -s 20 --timeout 10000 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js
