@@ -22,7 +22,7 @@ defineTest('dlpwrapper.js', function () {
         }
       ])
     });
-    dlpWrapper.redactText(original).then(res => {
+    dlpWrapper.redactText({originalText : original}).then(res => {
       assert.equal(res, expected);
     })
   });
