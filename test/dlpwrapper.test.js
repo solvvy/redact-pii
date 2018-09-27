@@ -1,12 +1,14 @@
 defineTest('dlpwrapper.js', function () {
   const assert = require('chai').assert;
   let rewire = require('rewire');
-  let dlpWrapper = rewire('../lib/dlpwrapper.js');
+  let DlpWrapper = rewire('../lib/dlpwrapper.js');
 
-  it('should return non-strings', function () {
+    it('should return non-strings', function () {
     let original = 'Hey it\'s David Johnson with ACME Corp. My SSN is 123-45-6789.';
     let expected = 'Hey it\'s PERSON_NAME with ACME Corp. My SSN is US_SOCIAL_SECURITY_NUMBER.';
-    dlpWrapper.__set__('dlp', {
+    let dlpRedactor = DlpWrapper();
+
+    DlpWrapper.__set__('dlp', {
       projectPath: () => 'mock-project',
       inspectContent: () => Promise.resolve([
         {
@@ -22,7 +24,8 @@ defineTest('dlpwrapper.js', function () {
         }
       ])
     });
-    dlpWrapper.redactText(original).then(res => {
+
+    dlpRedactor.redactText(original).then(res => {
       assert.equal(res, expected);
     })
   });
