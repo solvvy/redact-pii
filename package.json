@@ -4,10 +4,13 @@
   "description": "Remove personally identifiable information from text.",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "xo ./lib/**/*.js && mocha -s 20 --timeout 10000 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js",
-    "test:lint": "xo ./lib/**/*.js",
+    "test": "mocha -s 20 --timeout 10000 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js && prettier './+(bin|lib|test)/**/*.js' --list-different",
+    "prettier": "prettier './+(bin|lib|test)/**/*.+(js|ts|tsx)' --write",
     "test:coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- --require test/bootstrap test/*.test.js test/**/*.test.js",
     "test:watch": "mocha --watch --reporter dot --require test/bootstrap test/*.test.js test/**/*.test.js"
+  },
+  "engines": {
+    "node": ">6.0.0"
   },
   "repository": {
     "type": "git",
@@ -19,43 +22,6 @@
     "url": "https://gitlab.com/solvvy/redact-pii/issues"
   },
   "homepage": "https://gitlab.com/solvvy/redact-pii#readme",
-  "xo": {
-    "env": [
-      "browser",
-      "node",
-      "mocha"
-    ],
-    "space": 2,
-    "rules": {
-      "complexity": [
-        "warn",
-        10
-      ],
-      "xo/filename-case": 0,
-      "no-else-return": 0,
-      "max-statements-per-line": [
-        "error",
-        {
-          "max": 2
-        }
-      ],
-      "brace-style": [
-        "error",
-        "1tbs",
-        {
-          "allowSingleLine": true
-        }
-      ],
-      "comma-dangle": [
-        "error",
-        "only-multiline"
-      ],
-      "dot-location": [
-        "error",
-        "object"
-      ]
-    }
-  },
   "dependencies": {
     "@google-cloud/dlp": "^0.3.0",
     "lodash": "^4.16.6"
@@ -65,9 +31,13 @@
     "istanbul": "^0.4.5",
     "json-loader": "^0.5.7",
     "mocha": "^5.2.0",
+    "prettier": "1.14.3",
     "rewire": "^3.0.2",
     "sinon": "^1.17.6",
-    "sinon-chai": "^2.8.0",
-    "xo": "^0.17.0"
+    "sinon-chai": "^2.8.0"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 120
   }
 }
