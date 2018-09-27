@@ -1,9 +1,9 @@
-defineTest('dlpwrapper.js', function() {
+defineTest('gcp-dlp-wrapper.js', function() {
   const assert = require('chai').assert;
   let rewire = require('rewire');
-  let DlpWrapper = rewire('../lib/dlpwrapper.js');
+  let DlpWrapper = rewire('../lib/gcp-dlp-wrapper.js');
 
-  it('should return non-strings', function() {
+  it('[integration] should return non-strings', function() {
     let original = "Hey it's David Johnson with ACME Corp. My SSN is 123-45-6789.";
     let expected = "Hey it's PERSON_NAME with ACME Corp. My SSN is US_SOCIAL_SECURITY_NUMBER.";
     let dlpRedactor = DlpWrapper();

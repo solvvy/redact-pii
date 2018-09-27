@@ -4,7 +4,7 @@ defineTest('index.js', function(Redactor) {
   // process.env.GOOGLE_APPLICATION_CREDENTIALS = "/home/user/Downloads/[FILE_NAME].json";
   let redactor = Redactor({ enableGoogleCloudDLP: useGoogleApi });
   const assert = require('chai').assert;
-  const dlpWrapper = require('../lib/dlpwrapper.js');
+  const dlpWrapper = require('../lib/gcp-dlp-wrapper.js');
 
   function verify(items) {
     items.forEach(function(item) {
