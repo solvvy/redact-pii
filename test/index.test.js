@@ -1,6 +1,8 @@
 defineTest('index.js', function (Redactor) {
   // to use the google API, there needs a key to be present at ~/.redact-pii/google-account-placeholder-key.json
   let useGoogleApi = true;
+  let useGoogleApi = false;
+  // process.env.GOOGLE_APPLICATION_CREDENTIALS = "/home/user/Downloads/[FILE_NAME].json";
   let redactor = Redactor({enableGoogleCloudDLP : useGoogleApi});
   const assert = require('chai').assert;
   const dlpWrapper = require('../lib/dlpwrapper.js');
