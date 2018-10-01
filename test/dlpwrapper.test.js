@@ -9,7 +9,8 @@ defineTest('gcp-dlp-wrapper.js', function() {
     let dlpRedactor = DlpWrapper();
 
     DlpWrapper.__set__('dlp', {
-      projectPath: () => 'mock-project',
+      getProjectId: () => Promise.resolve('mock-project'),
+      projectPath: () => 'projects/mock-project',
       inspectContent: () =>
         Promise.resolve([
           {
