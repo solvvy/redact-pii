@@ -1,6 +1,6 @@
 {
   "name": "redact-pii",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Remove personally identifiable information from text.",
   "main": "./lib/index.js",
   "scripts": {
@@ -23,8 +23,9 @@
   },
   "homepage": "https://gitlab.com/solvvy/redact-pii#readme",
   "dependencies": {
-    "@google-cloud/dlp": "^0.3.0",
-    "lodash": "^4.16.6"
+    "@google-cloud/dlp": "^0.9.0",
+    "lodash": "^4.16.6",
+    "semver": "^5.5.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
