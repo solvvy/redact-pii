@@ -1,6 +1,6 @@
 {
   "name": "redact-pii",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Remove personally identifiable information from text.",
   "main": "./lib/index.js",
   "scripts": {
