@@ -3,7 +3,7 @@ defineTest('gcp-dlp-wrapper.js', function() {
   let rewire = require('rewire');
   let DlpWrapper = rewire('../lib/gcp-dlp-wrapper.js');
 
-  it('[integration] should return non-strings', function(done) {
+  it('should return non-strings', function(done) {
     this.timeout(2000);
 
     let original = "Hey it's David Johnson with ACME Corp. My SSN is 123-45-6789.";
@@ -40,7 +40,7 @@ defineTest('gcp-dlp-wrapper.js', function() {
       });
   });
 
-  it('[integration] should not treat input as regex', function(done) {
+  it('should not treat input as regex', function(done) {
     this.timeout(2000);
 
     let original = 'Just call (646) 846-1111 or (646) 846-3663 or (646) 846-3663.';
@@ -75,7 +75,7 @@ defineTest('gcp-dlp-wrapper.js', function() {
       });
   });
 
-  it('[integration] should prefer more likely matches', function(done) {
+  it('should prefer more likely matches', function(done) {
     this.timeout(2000);
 
     let original = 'Just call (646) 846-FOOD or (646) 846-3663.';
@@ -108,6 +108,54 @@ defineTest('gcp-dlp-wrapper.js', function() {
       })
       .catch(e => {
         done(e);
+      });
+  });
+
+  it('should use fallback redaction if an error is thrown', function(done) {
+    this.timeout(2000);
+
+    let original = "Hey it's David Johnson with ACME Corp. I live in Utah";
+    let dlpRedactor = DlpWrapper();
+
+    DlpWrapper.__set__('dlp', {
+      getProjectId: () => Promise.resolve('mock-project'),
+      projectPath: () => 'projects/mock-project',
+      inspectContent: () => Promise.reject('error happened')
+    });
+
+    dlpRedactor
+      .redactText(original)
+      .then(res => {
+        assert.equal(res, original);
+        done();
+      })
+      .catch(e => {
+        assert.fail("Promise shouldn't have rejected.");
+        done(e);
+      });
+  });
+
+  it('should throw the error if fallback redaction is turned off and an error is thrown', function(done) {
+    this.timeout(2000);
+
+    let original = "Hey it's David Johnson with ACME Corp. My SSN is 123-45-6789.";
+    let dlpRedactor = DlpWrapper({ disableDLPFallbackRedaction: true });
+
+    DlpWrapper.__set__('dlp', {
+      getProjectId: () => Promise.resolve('mock-project'),
+      projectPath: () => 'projects/mock-project',
+      inspectContent: () => Promise.reject('error happened')
+    });
+
+    dlpRedactor
+      .redactText(original)
+      .then(res => {
+        assert.fail('Promise should have rejected.');
+        done();
+      })
+      .catch(e => {
+        assert.equal(e, 'error happened');
+        done();
       });
   });
 });

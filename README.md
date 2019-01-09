@@ -49,6 +49,11 @@ redactor.redact('我的卡号是1234-5678-9876-5432').then(res => {
 ```
 This redacts of an exhaustive list of languages (Chinese, German,etc) and exhaustive list of [PII fields](https://cloud.google.com/dlp/docs/infotypes-reference)
 
+If Google's DLP redaction throws an error (i.e. "RESOURCE_EXHAUSTED: Quota exceeded for quota metric") then by default it will fallback to use the standard redaction. You can turn off this default fallback logic by setting the `disableDLPFallbackRedaction` option to true.
+```js
+var redactor = require('redact-pii')({enableGoogleCloudDLP : true, disableDLPFallbackRedaction: true});
+```
+
 ## API
 
 ### Redactor(options)
