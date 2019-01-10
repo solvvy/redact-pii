@@ -1,3 +1,5 @@
+const NUM_DEFAULT_INFO_TYPES = 78;
+
 defineTest('gcp-dlp-wrapper.js', function() {
   const assert = require('chai').assert;
   let rewire = require('rewire');
@@ -130,7 +132,6 @@ defineTest('gcp-dlp-wrapper.js', function() {
         done();
       })
       .catch(e => {
-        assert.fail("Promise shouldn't have rejected.");
         done(e);
       });
   });
@@ -139,7 +140,7 @@ defineTest('gcp-dlp-wrapper.js', function() {
     this.timeout(2000);
 
     let original = "Hey it's David Johnson with ACME Corp. My SSN is 123-45-6789.";
-    let dlpRedactor = DlpWrapper({ disableDLPFallbackRedaction: true });
+    let dlpRedactor = DlpWrapper({ googleCloudDLPOptions: { disableFallbackRedaction: true } });
 
     DlpWrapper.__set__('dlp', {
       getProjectId: () => Promise.resolve('mock-project'),
@@ -156,6 +157,150 @@ defineTest('gcp-dlp-wrapper.js', function() {
       .catch(e => {
         assert.equal(e, 'error happened');
         done();
+      });
+  });
+
+  it('should allow including additional info types using includeInfoTypes option', function(done) {
+    this.timeout(2000);
+
+    let original = 'My name is John';
+    let expected = 'My name is NAME';
+    let dlpRedactor = DlpWrapper({
+      googleCloudDLPOptions: {
+        inspectOverrides: {
+          includeInfoTypes: ['ADDITIONAL_DLP_INFO_TYPE1', 'ADDITIONAL_DLP_INFO_TYPE2']
+        }
+      }
+    });
+
+    let inspectContentCallOptions = null;
+    DlpWrapper.__set__('dlp', {
+      getProjectId: () => Promise.resolve('mock-project'),
+      projectPath: () => 'projects/mock-project',
+      inspectContent: options => {
+        inspectContentCallOptions = options;
+        return Promise.resolve([
+          {
+            result: {
+              findings: [{ quote: 'John', infoType: { name: 'NAME' } }]
+            }
+          }
+        ]);
+      }
+    });
+
+    dlpRedactor
+      .redactText(original)
+      .then(res => {
+        assert.equal(res, expected);
+
+        const actualInfoTypes = inspectContentCallOptions.inspectConfig.infoTypes;
+        assert.equal(actualInfoTypes.length, NUM_DEFAULT_INFO_TYPES + 2);
+        assert.isOk(actualInfoTypes.find(infoType => infoType.name === 'ADDITIONAL_DLP_INFO_TYPE1'));
+        assert.isOk(actualInfoTypes.find(infoType => infoType.name === 'ADDITIONAL_DLP_INFO_TYPE2'));
+
+        done();
+      })
+      .catch(e => {
+        done(e);
+      });
+  });
+
+  it('should allow excluding info types from default set using excludeInfoTypes option', function(done) {
+    this.timeout(2000);
+
+    let original = 'My name is John';
+    let expected = 'My name is NAME';
+    let dlpRedactor = DlpWrapper({
+      googleCloudDLPOptions: {
+        inspectOverrides: {
+          excludeInfoTypes: ['CANADA_PASSPORT', 'FRANCE_PASSPORT']
+        }
+      }
+    });
+
+    let inspectContentCallOptions = null;
+    DlpWrapper.__set__('dlp', {
+      getProjectId: () => Promise.resolve('mock-project'),
+      projectPath: () => 'projects/mock-project',
+      inspectContent: options => {
+        inspectContentCallOptions = options;
+        return Promise.resolve([
+          {
+            result: {
+              findings: [{ quote: 'John', infoType: { name: 'NAME' } }]
+            }
+          }
+        ]);
+      }
+    });
+
+    dlpRedactor
+      .redactText(original)
+      .then(res => {
+        assert.equal(res, expected);
+
+        const actualInfoTypes = inspectContentCallOptions.inspectConfig.infoTypes;
+        assert.equal(actualInfoTypes.length, NUM_DEFAULT_INFO_TYPES - 2);
+        assert.isNotOk(actualInfoTypes.find(infoType => infoType.name === 'CANADA_PASSPORT'));
+        assert.isNotOk(actualInfoTypes.find(infoType => infoType.name === 'FRANCE_PASSPORT'));
+
+        done();
+      })
+      .catch(e => {
+        done(e);
+      });
+  });
+
+  it('should allow overriding default inspectConfig options', function(done) {
+    this.timeout(2000);
+
+    const customInfoType = {
+      infoType: { name: 'FOO' },
+      regex: { pattern: 'foo' }
+    };
+
+    let original = 'My name is John';
+    let expected = 'My name is NAME';
+    let dlpRedactor = DlpWrapper({
+      googleCloudDLPOptions: {
+        inspectOverrides: {
+          inspectConfig: {
+            customInfoTypes: [customInfoType]
+          }
+        }
+      }
+    });
+
+    let inspectContentCallOptions = null;
+    DlpWrapper.__set__('dlp', {
+      getProjectId: () => Promise.resolve('mock-project'),
+      projectPath: () => 'projects/mock-project',
+      inspectContent: options => {
+        inspectContentCallOptions = options;
+        return Promise.resolve([
+          {
+            result: {
+              findings: [{ quote: 'John', infoType: { name: 'NAME' } }]
+            }
+          }
+        ]);
+      }
+    });
+
+    dlpRedactor
+      .redactText(original)
+      .then(res => {
+        assert.equal(res, expected);
+
+        const customInfoTypes = inspectContentCallOptions.inspectConfig.customInfoTypes;
+        assert.equal(customInfoTypes.length, 1);
+        assert.deepEqual(customInfoTypes, [customInfoType]);
+
+        done();
+      })
+      .catch(e => {
+        done(e);
       });
   });
 });

@@ -24,14 +24,14 @@ redactor.redact('Hi David Johnson, Please give me a call at 555-555-5555').then(
 });
 ```
 
-There is also an option to forward the requests to use Google's [Data Loss Prevention API](https://cloud.google.com/dlp/). To enable this option, set enableGoogleCloudDLP as true and use any of the following three options to authenticate:  
+There is also an option to additionally further redact the input using Google's [Data Loss Prevention API](https://cloud.google.com/dlp/). To enable this option, set enableGoogleCloudDLP as true and use any of the following three options to authenticate:  
 1. Replace client email and private key with the values from the service account with dlp enabled in the below example
     ```js 
-    var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {credentials : {client_email: 'client_email', private_key: 'api_key'}}});
+    var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {clientOptions: {credentials : {client_email: 'client_email', private_key: 'api_key'}}}});
     ```
 2. Pass the service account json location with the key, keyFileName
     ```js 
-    var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {keyFileName: 'placeholder.json'}});
+    var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {clientOptions: {keyFileName: 'placeholder.json'}}});
     ```
 3. Set the environment variable GOOGLE_APPLICATION_CREDENTIALS to the path of the service account which has DLP enabled.
     ```js
@@ -41,18 +41,24 @@ There is also an option to forward the requests to use Google's [Data Loss Preve
 
 Example:
 ```js
-var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {credentials : {client_email: 'client_email', private_key: 'api_key'}}});
+var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {clientOptions: {credentials : {client_email: 'client_email', private_key: 'api_key'}}}});
 redactor.redact('我的卡号是1234-5678-9876-5432').then(res => {
     console.log(res);
     //我的卡号是CREDIT_CARD_NUMBER
 });
 ```
-This redacts of an exhaustive list of languages (Chinese, German,etc) and exhaustive list of [PII fields](https://cloud.google.com/dlp/docs/infotypes-reference)
+This redacts an exhaustive list of languages (Chinese, German,etc) and exhaustive list of [PII fields](https://cloud.google.com/dlp/docs/infotypes-reference)
 
-If Google's DLP redaction throws an error (i.e. "RESOURCE_EXHAUSTED: Quota exceeded for quota metric") then by default it will fallback to use the standard redaction. You can turn off this default fallback logic by setting the `disableDLPFallbackRedaction` option to true.
+If Google's DLP redaction throws an error (i.e. "RESOURCE_EXHAUSTED: Quota exceeded for quota metric") then by default it will fallback to use the standard redaction. You can turn off this default fallback logic by setting the `googleCloudDLPOptions.disableFallbackRedaction` option to true.
 ```js
-var redactor = require('redact-pii')({enableGoogleCloudDLP : true, disableDLPFallbackRedaction: true});
+var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {disableFallbackRedaction: true}});
 ```
+
+Advanced options to customize Google DLP behavior are also available in `googleCloudDLPOptions.inspectOverrides` :
+
+* `includeInfoTypes`: array of extra DLP info type names to also include in addition to the default set
+* `excludeInfoTypes`: array of DLP info type names from the default set that should be excluded
+* `inspectConfig`: object containing `inspectConfig` options that should override the default `inspectConfig` options. For example, this can be used to set `customInfoTypes` or define a `ruleSet` to modify behavior of info types (e.g. exclude certain patterns). 
 
 ## API
 
