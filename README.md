@@ -1,135 +1,224 @@
 # redact-pii
+
 [![NPM Package](https://badge.fury.io/js/redact-pii.svg)](https://www.npmjs.com/package/redact-pii)
-[![Build Status](https://travis-ci.org/solvvy/redact-pii.svg?branch=master)](https://travis-ci.org/solvvy/redact-pii)
-[![Coverage Status](https://coveralls.io/repos/github/solvvy/redact-pii/badge.svg?branch=master)](https://coveralls.io/github/solvvy/redact-pii?branch=master)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![Dependencies](https://david-dm.org/solvvy/redact-pii.svg)](https://david-dm.org/solvvy/redact-pii)
 
-Remove personally identifiable information from text.  This library should work on server or in browser (at least ie11+ compatibility).
+> **NOTE**: Users of redact-pii@2.x.x please check the [Changelog](CHANGELOG.md) before upgrading .
 
-## Usage
+Remove personally identifiable information from text. 
+
+### Prerequesites
+
+This library is primarily written for node.js but it should work in the browser as well.
+It is written in TypeScript and compiles to ES2017. The library makes use of `async` functions and hence needs node.js 8.0.0 or higher (or a modern browser). If this is a problem for you please open an issue and we may consider adapting the compiler settings to support older node.js versions.
+
+### Simple example (synchronous API)
+
 ```
 npm install redact-pii
 ```
 
 ```js
-var redactor = require('redact-pii')();
-redactor.redact('Hi David Johnson, Please give me a call at 555-555-5555').then(res => {
-    console.log(res);
-    // Hi NAME, Please give me a call at PHONE_NUMBER
+const { SyncRedactor } = require('redact-pii');
+const redactor = new SyncRedactor();
+const redactedText = redactor.redact('Hi David Johnson, Please give me a call at 555-555-5555');
+// Hi NAME, Please give me a call at PHONE_NUMBER
+console.log(redactedText);
+```
+
+### Simple example (asynchronous / promise-based API)
+
+```js
+const { AsyncRedactor } = require('redact-pii');
+const redactor = new AsyncRedactor();
+redactor.redactAsync('Hi David Johnson, Please give me a call at 555-555-5555').then(redactedText => {
+  // Hi NAME, Please give me a call at PHONE_NUMBER
+  console.log(redactedText);
 });
 ```
 
-There is also an option to additionally further redact the input using Google's [Data Loss Prevention API](https://cloud.google.com/dlp/). To enable this option, set enableGoogleCloudDLP as true and use any of the following three options to authenticate:  
-1. Replace client email and private key with the values from the service account with dlp enabled in the below example
-    ```js 
-    var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {clientOptions: {credentials : {client_email: 'client_email', private_key: 'api_key'}}}});
-    ```
-2. Pass the service account json location with the key, keyFileName
-    ```js 
-    var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {clientOptions: {keyFileName: 'placeholder.json'}}});
-    ```
-3. Set the environment variable GOOGLE_APPLICATION_CREDENTIALS to the path of the service account which has DLP enabled.
-    ```js
-    process.env.GOOGLE_APPLICATION_CREDENTIALS = "/home/user/Downloads/[FILE_NAME].json"; 
-    var redactor = require('redact-pii')({enableGoogleCloudDLP : true});
-    ```
+## Supported Features
 
-Example:
+- sync and async API variants
+- ability to customize what to use as replacement value for detected patterns
+- built in regex based redaction rules for:
+  - credentials
+  - creditCardNumber
+  - emailAddress
+  - ipAddress
+  - name
+  - password
+  - phoneNumber
+  - streetAddress
+  - username
+  - usSocialSecurityNumber
+  - zipcode
+  - url
+  - digits
+  - > **NOTE**: the built-in redaction rules are mostly applicable for identifying (US-)english PII.
+    > Consider using custom patterns or [Google Cloud DLP](https://cloud.google.com/dlp/) if you have non-english PII to redact.
+- ability to add custom redaction regex patterns and complete custom redaction functions (both sync and async)
+- ability to use [Google Data Loss Prevention ](https://cloud.google.com/dlp/) as advanced custom redactor
+
+## Advanced usage and features
+
+### Customize replacement values
+
 ```js
-var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {clientOptions: {credentials : {client_email: 'client_email', private_key: 'api_key'}}}});
-redactor.redact('我的卡号是1234-5678-9876-5432').then(res => {
-    console.log(res);
-    //我的卡号是CREDIT_CARD_NUMBER
-});
-```
-This redacts an exhaustive list of languages (Chinese, German,etc) and exhaustive list of [PII fields](https://cloud.google.com/dlp/docs/infotypes-reference)
+const { SyncRedactor } = require('redact-pii');
 
-If Google's DLP redaction throws an error (i.e. "RESOURCE_EXHAUSTED: Quota exceeded for quota metric") then by default it will fallback to use the standard redaction. You can turn off this default fallback logic by setting the `googleCloudDLPOptions.disableFallbackRedaction` option to true.
-```js
-var redactor = require('redact-pii')({enableGoogleCloudDLP : true, googleCloudDLPOptions: {disableFallbackRedaction: true}});
-```
-
-Advanced options to customize Google DLP behavior are also available in `googleCloudDLPOptions.inspectOverrides` :
-
-* `includeInfoTypes`: array of extra DLP info type names to also include in addition to the default set
-* `excludeInfoTypes`: array of DLP info type names from the default set that should be excluded
-* `inspectConfig`: object containing `inspectConfig` options that should override the default `inspectConfig` options. For example, this can be used to set `customInfoTypes` or define a `ruleSet` to modify behavior of info types (e.g. exclude certain patterns). 
-
-## API
-
-### Redactor(options)
-* `options` {Object}
-  * `replace` {String|Function} If a string, the value will be used as the replacement for all identified patterns. If a function, the function will be called with the name of each pattern to determine the replacement value for the pattern.
-  * `*` {RegExp|`false`} Any other key in options will be treated as a regular expression to use for replacing matches, `false` if no replacement is desired for a particular pattern. The following patterns are enabled by default.
-    * credentials
-    * creditCardNumber
-    * emailAddress
-    * ipAddress
-    * name
-    * password
-    * phoneNumber
-    * streetAddress
-    * username
-    * usSocialSecurityNumber
-    * zipcode
-    * url
-    * digits
-
-### redactor.redact(text)
-* `text` {String} The text which contains PII to redact
-* *returns {String}* The text with PII redacted
-
-## Customization
-
-### Replacement Values
-```js
-var redactor = require('redact-pii')({replace: 'TOP_SECRET'});
+// use a single replacement value for all built-in patterns found.
+const redactor = new SyncRedactor({ globalReplaceWith: 'TOP_SECRET' });
 redactor.redact('Dear David Johnson, I live at 42 Wallaby Way');
 // Dear TOP_SECRET, I live at TOP_SECRET
 
-var redactor = require('redact-pii')({
-  replace: function (name, defaultReplacement) {
-    if (name === 'creditCardNumber') {
-      return value => 'XXXXXXXXXXXX' + value.slice(12);
-    } else {
-      return defaultReplacement;
+// use a custom replacement value for a specific built-in pattern
+const redactor = new SyncRedactor({
+  builtInRedactors: {
+    names: {
+      replacementValue: 'ANONYMOUS_PERSON'
     }
   }
 });
-redactor.redact('my CC is 1234567812345678');
-// my CC is XXXXXXXXXXXX5678
+
+redactor.redact('Dear David Johnson');
+// Dear ANONYMOUS_PERSON
 ```
 
-### Patterns
+### Add custom patterns or redaction functions
+
+Note that the order of redaction rules matters, therefore you have to decide whether you want your custom redaction rules to run `before` or `after` the built-in ones. Generally it's better to put very specialized patterns or functions `before` the built-in ones and more broad / general ones `after`.
+
 ```js
-var redactor = require('redact-pii')({name: false});
-redactor.redact('Dear David Johnson, I live at 42 Wallaby Way');
-// Dear David Johnson, I live at STREET_ADDRESS
+const { SyncRedactor } = require('redact-pii');
 
+// add a custom regexp pattern
+const redactor = new SyncRedactor({
+  customRedactors: {
+    before: [
+      {
+        regexpPattern: /\b(cat|dog|cow)s?\b/gi,
+        replaceWith: 'ANIMAL'
+      }
+    ]
+  }
+});
 
-var redactor = require('redact-pii')({animal: /\b(cat|dog|cow)s?\b/gi});
 redactor.redact('I love cats, dogs, and cows');
 // I love ANIMAL, ANIMAL, and ANIMAL
+
+// add a synchronous custom redaction function
+const redactor = new SyncRedactor({
+  customRedactors: {
+    before: [
+      {
+        redact(textToRedact) {
+          return textToRedact.includes('TopSecret')
+            ? 'THIS_FILE_IS_SO_TOP_SECRET_WE_HAD_TO_REDACT_EVERYTHING'
+            : textToRedact;
+        }
+      }
+    ]
+  }
+});
+
+redactor.redact('This document is classified as TopSecret.')
+// THIS_FILE_IS_SO_TOP_SECRET_WE_HAD_TO_REDACT_EVERYTHING
+
+
+import { AsyncRedactor } from './src/index';
+
+// add an asynchronous custom redaction function
+const redactor = new AsyncRedactor({
+  customRedactors: {
+    before: [
+      {
+        redactAsync(textToRedact) {
+          return myCustomRESTApiServer.redactCustomWords(textToRedact);
+        }
+      }
+    ]
+  }
+});
 ```
 
+### Disable specific built-in redaction rules
 
-### Additional Redaction with Google's Data Loss Prevention API
+```js
+const redactor = new SyncRedactor({
+  builtInRedactors: {
+    names: {
+      enable: false
+    },
+    emailAddress: {
+      enable: false
+    }
+  }
+});
+```
 
-In addition to custom redaction, the request is also forwarded to Google's Redactor a.k.a [Data Loss Prevention API](https://cloud.google.com/dlp/). To enable redaction by Google's API, in `gcp-dlp-wrapper.js`, set the option enable to `true`(defaults to false) and use any of the three above mentioned authentication mechanisms to authenticate. All three authentication mechanisms need a service account key file which has DLP enabled. You can set the option to timeout (defaulted to 1.5s) to bypass through the google API in case the service is too slow for your needs.
+### Use Google Data Loss Prevention
 
-To generate the key file, navigate to https://console.cloud.google.com/home/dashboard and select your appropriate project(make sure the name of the project is same as in `gcp-dlp-wrapper.js`).
+[Google Data Loss Prevention (DLP)](https://cloud.google.com/dlp/) has an extensive rule set to identify and redact PII that goes beyond just simple regex patterns. Consider using DLP in-addition to the built-in patterns of redact-pii for high value / sensitive data applications.
+Also we strongly advice on using DLP if you have to redact non-english data since redact-pii's built-in patterns cover mostly US english patterns only and have no support for non-latin characters, whereas DLP has extensive support for international IDs, Chinese and Korean characters etc..
+`redact-pii` provides a small wrapper `GoogleDLPRedactor` around DLP that can be used seperately or in conjunction with redact-pii's built-in patterns.
+Note that Google Cloud DLP already also provides a node.js library (https://www.npmjs.com/package/@google-cloud/dlp) that can be used directly to redact data. You have to decide yourself if you want to use the `GoogleDLPRedactor` wrapper or `@google-cloud/dlp` directly. The main differentiators of using `redact-pii` / `GoogleDLPRedactor` are:
 
-Then in API's and Services > Library, search for Data Loss Prevention API and enable it for your project.
+- `GoogleDLPRedactor` already instantiates `@google-cloud/dlp` with a bunch of sane defaults and infoTypes
+- redact-pii has a bunch of built-in patterns which can run in addition to DLP infoTypes
+- it is easy to add custom patterns or rules to redact-pii
+- `GoogleDLPRedactor` uses the `.inspectContent` instead of `.deidentifyContent` method of `@google-cloud/dlp` which has a pricing advantage for large scale redaction scenarios since you will be only charged "Inspection Units" and no additional "Transformation Units" (see https://cloud.google.com/dlp/pricing) . redact-pii only uses DLP to `identify` PII but does the replacement `transformation` by itself which saves you some 💰💰💰.
 
-To generate the key file, navigate to API's and Services > Credentials, Click "Create Credentials" and choose a service account; Create a new service account(or use any unused service account if you have one) and type=json and create the key. Use the json file to authenticate using any of the three methods mentioned above.
+#### Use Google Data Loss Prevention only (this won't make use of redact-pii's built-in regex patterns)
 
-### Debug
-##### To Run
-To run the test cases in Intellij, add this to the run configuration  
-Working directory: ~/Work/Code/redact-pii/  
-Javascript file: node_modules/mocha/bin/mocha  
-Application parameters: xo ./lib/**/*.js && mocha -s 20 --timeout 10000 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js
+1. Prequesites:
+   You have to have a Google Cloud Project with DLP enabled and you need a _serviceaccount key json-file_ for a service account with the `serviceusage.services.use` permission or `roles/dlp.user` role. For more detailed steps on how to get a valid service account key follow the steps here: https://github.com/googleapis/nodejs-dlp#before-you-begin
 
-#####To Debug
-Application parameters: xo --inspect-brk ./lib/**/*.js && mocha -s 20 --timeout 10000 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js
+2. Set the environment variable `GOOGLE_APPLICATION_CREDENTIALS` and point it to the serviceaccount key. E.g.:
+   `export GOOGLE_APPLICATION_CREDENTIALS=./path/to/my-serviceaccount-key.json`
+
+3. Use redact pii
+
+```js
+const { GoogleDLPRedactor } = require('redact-pii');
+
+const redactor = new GoogleDLPRedactor();
+
+redactor.redactAsync('I live at 123 Park Ave Apt 123 New York City, NY 10002').then(redactedText => {
+  console.log(redactedText);
+  // I live at STREET_ADDRESS US_STATE City, LOCATION ZIPCODE'
+});
+```
+
+#### Use Google DLP AND built-in patterns AND a custom pattern
+
+You can create an `AsyncRedactor` and add a `GoogleDLPRedactor` as custom redactor to the `AsyncRedactor`.
+That way you are combining redact-pii's built-in patterns with Google DLP. The example below additionally adds a custom regexp pattern.
+
+```js
+const { AsyncRedactor, GoogleDLPRedactor } = require('redact-pii');
+
+const redactor = new AsyncRedactor({
+  customRedactors: {
+    before: [
+      new GoogleDLPRedactor(),
+      {
+        regexpPattern: /\b(cat|dog|cow)s?\b/gi,
+        replaceWith: 'ANIMAL'
+      }
+    ]
+  }
+});
+
+redactor.redactAsync('I live at 123 Park Ave Apt 123 New York City, NY 10002 and love cats').then(redactedText => {
+  console.log(redactedText);
+  // I live at STREET_ADDRESS US_STATE City, LOCATION ZIPCODE and love ANIMAL'
+});
+```
+
+### Contributing
+
+#### Run tests
+
+You can run the tests via `npm run test`. There are are a bunch of tests which require access to Google's DLP API.
+They will only be run if you set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable - otherwise they'll be skipped automatically. You can set it via `GOOGLE_APPLICATION_CREDENTIALS=/path/to/keyfile.json npm test`.

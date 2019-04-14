@@ -1,0 +1,7 @@
+test/
+.vscode
+azure-pipelines.yml
+jest.config.js
+tsconfig.json
+.DS_Store
+.github

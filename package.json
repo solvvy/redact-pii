@@ -2,40 +2,41 @@
   "name": "redact-pii",
   "version": "2.1.0",
   "description": "Remove personally identifiable information from text.",
-  "main": "./lib/index.js",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
-    "test": "mocha --grep '\\[integration\\]' --invert -s 20 --timeout 10000 --reporter spec --require test/bootstrap test/*.test.js test/**/*.test.js && prettier './+(bin|lib|test)/**/*.js' --list-different",
-    "prettier": "prettier './+(bin|lib|test)/**/*.+(js|ts|tsx)' --write",
-    "test:coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- --require test/bootstrap test/*.test.js test/**/*.test.js",
-    "test:watch": "mocha --watch --reporter dot --require test/bootstrap test/*.test.js test/**/*.test.js"
+    "build": "del lib && tsc --pretty",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run verify_all && npm run build",
+    "verify_all": "npm run typecheck && npm test && npm run test_prettier && changelog-verify CHANGELOG.md",
+    "test": "jest",
+    "test_prettier": "prettier './+(src|test)/**/*.+(js|ts|tsx)' --list-different",
+    "prettier": "prettier './+(src|test)/**/*.+(js|ts|tsx)' --write",
+    "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md"
   },
   "engines": {
-    "node": ">6.0.0"
+    "node": ">8.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/solvvy/redact-pii.git"
+    "url": "https://github.com/solvvy/redact-pii.git"
   },
-  "author": "Patrick Hulce <patrick.hulce@gmail.com>",
+  "author": "Christian Theilemann <christian@solvvy.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://gitlab.com/solvvy/redact-pii/issues"
-  },
-  "homepage": "https://gitlab.com/solvvy/redact-pii#readme",
   "dependencies": {
-    "@google-cloud/dlp": "^0.10.0",
-    "lodash": "^4.16.6",
-    "semver": "^5.5.1"
+    "@google-cloud/dlp": "~0.11.0",
+    "lodash": "^4.17.11"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "istanbul": "^0.4.5",
-    "json-loader": "^0.5.7",
-    "mocha": "^5.2.0",
-    "prettier": "1.14.3",
-    "rewire": "^3.0.2",
-    "sinon": "^1.17.6",
-    "sinon-chai": "^2.8.0"
+    "@types/jest": "24.0.11",
+    "@types/lodash": "4.14.123",
+    "changelog-verify": "1.1.2",
+    "del-cli": "1.1.0",
+    "jest": "24.7.1",
+    "prettier": "1.17.0",
+    "ts-jest": "24.0.2",
+    "typescript": "3.4.3",
+    "version-changelog": "3.1.1"
   },
   "prettier": {
     "singleQuote": true,
