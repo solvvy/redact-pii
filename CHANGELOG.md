@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 # Changelog
  
 ## [Unreleased][]
+
+## [3.0.0][] - 2019-04-21
  
 - This version is an almost complete rewrite from prior versions and **breaks** the prior API contract. In summary the changes are:
 - Library is now written in TypeScript
@@ -16,3 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   in order to use it.
 - Google Cloud DLP redaction does not have an implicit, hard-coded 5000ms timeout anymore. If you want to set a timeout for DLP calls you have to implement it yourself. In case you're using `bluebird` as promise library consider using `.timeout`.
  
+
+[Unreleased]: https://github.com/solvvy/redact-pii/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/solvvy/redact-pii/tree/v3.0.0
