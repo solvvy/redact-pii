@@ -1,6 +1,5 @@
 import { ISyncRedactor } from '../types';
-
-const _wellKnownNames = require('./well-known-names.json');
+import * as _wellKnownNames from './well-known-names.json';
 
 const greetingRegex = /(^|\.\s+)(dear|hi|hello|greetings|hey|hey there)/gi;
 const closingRegex = /(thx|thanks|thank you|regards|best|[a-z]+ly|[a-z]+ regards|all the best|happy [a-z]+ing|take care|have a [a-z]+ (weekend|night|day))/gi;

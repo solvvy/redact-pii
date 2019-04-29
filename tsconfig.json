@@ -10,7 +10,8 @@
     "noEmit": false,
     "inlineSources": false,
     "outDir": "lib",
-    "rootDir": "src"
+    "rootDir": "src",
+    "resolveJsonModule": true
   },
   "include": ["src/**/*.ts"]
 }
