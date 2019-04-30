@@ -154,8 +154,8 @@ describe('index.js', function() {
       'I live at STREET_ADDRESS US_STATE City, LOCATION ZIPCODE'
     ],
     [
-      'my address is 56 N First St CA 90210',
-      'my address is STREET_ADDRESS CA ZIPCODE',
+      'my address is 56 N First St NY 90210',
+      'my address is STREET_ADDRESS NY ZIPCODE',
       'my address is STREET_ADDRESS LOCATION ZIPCODE'
     ]
   ]);
