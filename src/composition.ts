@@ -32,8 +32,7 @@ export function composeChildRedactors<T extends AsyncCustomRedactorConfig>(opts:
   for (const regexpName of Object.keys(simpleRegexpBuiltIns)) {
     if (
       !opts.builtInRedactors ||
-      ((opts.builtInRedactors as any)[regexpName] &&
-      (opts.builtInRedactors as any)[regexpName].enabled !== false)
+      ((opts.builtInRedactors as any)[regexpName] && (opts.builtInRedactors as any)[regexpName].enabled !== false)
     ) {
       childRedactors.push(
         new SimpleRegexpRedactor({

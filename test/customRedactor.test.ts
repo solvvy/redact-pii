@@ -3,12 +3,12 @@ import { GoogleDLPRedactor, AsyncRedactor, SyncRedactor } from '../src';
 const redactor = new SyncRedactor();
 const compositeRedactorWithDLP = new AsyncRedactor({
   builtInRedactors: {
-      zipcode: {
-          enabled: false
-      },
-      digits: {
-          enabled: false
-      }
+    zipcode: {
+      enabled: false
+    },
+    digits: {
+      enabled: false
+    }
   },
   customRedactors: {
     after: [new GoogleDLPRedactor()]
@@ -42,12 +42,7 @@ describe('index.js', function() {
     });
   };
 
-  TestCase('should redact PII', [
-    [
-      "Hey it's David Johnson with 1234",
-      "Hey it's PERSON_NAME with DIGITS"
-    ]
-  ]);
+  TestCase('should redact PII', [["Hey it's David Johnson with 1234", "Hey it's PERSON_NAME with DIGITS"]]);
 
   runGoogleDLPTests &&
     it('[integration] should redact non english text', async function() {
@@ -57,7 +52,8 @@ describe('index.js', function() {
       await expect(compositeRedactorWithDLP.redactAsync('我的电话是 444-3332-343')).resolves.toBe(
         '我的电话是 PHONE_NUMBER'
       );
-      await expect(compositeRedactorWithDLP.redactAsync('Hey it\'s David Johnson with 1234')).resolves.toBe(
-          'Hey it\'s LAST_NAME with 1234');
+      await expect(compositeRedactorWithDLP.redactAsync("Hey it's David Johnson with 1234")).resolves.toBe(
+        "Hey it's LAST_NAME with 1234"
+      );
     });
 });
