@@ -11,6 +11,12 @@ const compositeRedactorWithDLP = new AsyncRedactor({
     }
   },
   customRedactors: {
+    before: [
+      {
+        regexpPattern: /(banana|apple|orange)/,
+        replaceWith: 'FOOD'
+      }
+    ],
     after: [new GoogleDLPRedactor()]
   }
 });
@@ -55,5 +61,10 @@ describe('index.js', function() {
       await expect(compositeRedactorWithDLP.redactAsync("Hey it's David Johnson with 1234")).resolves.toBe(
         "Hey it's LAST_NAME with 1234"
       );
+      await expect(
+        compositeRedactorWithDLP.redactAsync(
+          'Hi banana, my credit card is 4111111111111111 and I need help. Thanks, John'
+        )
+      ).resolves.toBe('Hi FOOD, my credit card is CREDIT_CARD_NUMBER and I need help. Thanks, LAST_NAME');
     });
 });

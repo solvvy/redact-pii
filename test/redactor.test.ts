@@ -59,7 +59,7 @@ describe('index.js', function() {
     ['blah blah. Thanks -Jon', 'blah blah. Thanks -PERSON_NAME'],
 
     ["here's my Cliff. blah blah", "here's my Cliff. blah blah", "here's my PERSON_NAME. blah blah"],
-    ["here's my Clifford. blah blah", "here's my PERSON_NAME. blah blah", "here's my PERSON_NAME. blah blah"],
+    ["here's my Clifford. blah blah", "here's my PERSON_NAME. blah blah", "here's my LAST_NAME. blah blah"],
     ['Dear Clifford,\n blah blah', 'Dear PERSON_NAME,\n blah blah'],
     ['blah blah\n\n\nthanks,\nAnna\n blah blah', 'blah blah\n\n\nthanks,\nPERSON_NAME\n blah blah'],
 
