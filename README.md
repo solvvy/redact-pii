@@ -148,10 +148,10 @@ const redactor = new AsyncRedactor({
 const redactor = new SyncRedactor({
   builtInRedactors: {
     names: {
-      enable: false
+      enabled: false
     },
     emailAddress: {
-      enable: false
+      enabled: false
     }
   }
 });

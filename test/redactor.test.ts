@@ -215,8 +215,8 @@ describe('index.js', function() {
   runGoogleDLPTests &&
     it('[integration] should redact non english text', async function() {
       await expect(compositeRedactorWithDLP.redactAsync('我的名字是王')).resolves.toBe('我的名字是王');
-      await expect(compositeRedactorWithDLP.redactAsync('我的卡号是 1234')).resolves.toBe('PERSON_NAME是 1234');
-      await expect(compositeRedactorWithDLP.redactAsync('我的电话是 444-3332-343')).resolves.toBe(
+      await expect(compositeRedactorWithDLP.redactAsync('我的卡号是 1234')).resolves.toBe('PERSON_NAME是 DIGITS');
+      await expect(compositeRedactorWithDLP.redactAsync('我的电话是 444-332-343')).resolves.toBe(
         '我的电话是 PHONE_NUMBER'
       );
     });
