@@ -1,6 +1,14 @@
 import { SyncCompositeRedactor, SyncCompositeRedactorOptions } from './SyncCompositeRedactor';
 import { AsyncCompositeRedactor, AsyncCompositeRedactorOptions } from './AsyncCompositeRedactor';
 import { GoogleDLPRedactor, GoogleDLPRedactorOptions } from './custom/GoogleDLPRedactor';
+import {
+  AsyncCustomRedactorConfig,
+  CompositeRedactorOptions,
+  IAsyncRedactor,
+  ISyncRedactor,
+  IRedactor,
+  SimpleRegexpCustomRedactorConfig
+} from './types';
 
 export {
   SyncCompositeRedactor as SyncRedactor,
@@ -8,5 +16,11 @@ export {
   AsyncCompositeRedactor as AsyncRedactor,
   AsyncCompositeRedactorOptions,
   GoogleDLPRedactor,
-  GoogleDLPRedactorOptions
+  GoogleDLPRedactorOptions,
+  AsyncCustomRedactorConfig,
+  CompositeRedactorOptions,
+  IAsyncRedactor,
+  ISyncRedactor,
+  IRedactor,
+  SimpleRegexpCustomRedactorConfig
 };
