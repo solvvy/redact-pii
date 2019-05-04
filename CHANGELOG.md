@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Google Cloud DLP redaction does not have an implicit, hard-coded 5000ms timeout anymore. If you want to set a timeout for DLP calls you have to implement it yourself. In case you're using `bluebird` as promise library consider using `.timeout`.
  
 
-[Unreleased]: https://github.com/solvvy/redact-pii/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/solvvy/redact-pii/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/solvvy/redact-pii/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/solvvy/redact-pii/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/solvvy/redact-pii/tree/v3.0.0
