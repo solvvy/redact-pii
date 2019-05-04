@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Changelog
  
-## [Unreleased][]
+## [3.0.2][] - 2019-05-04
+- fix parameter typo in docs (`enable` -> `enabled`)
+- fix `TypeError` when attempting to disable built-in redactors
 
 ## [3.0.1][] - 2019-04-29
 - Fix `Cannot find module './well-known-names.json'` error by making sure the file gets properly packaged
