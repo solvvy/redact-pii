@@ -76,7 +76,7 @@ redactor.redact('Dear David Johnson, I live at 42 Wallaby Way');
 const redactor = new SyncRedactor({
   builtInRedactors: {
     names: {
-      replacementValue: 'ANONYMOUS_PERSON'
+      replaceWith: 'ANONYMOUS_PERSON'
     }
   }
 });

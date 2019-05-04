@@ -24,7 +24,7 @@ export interface CompositeRedactorOptions<T extends AsyncCustomRedactorConfig> {
   builtInRedactors?: {
     [RedactorName in keyof typeof simpleRegexpBuiltIns | 'names']?: {
       enabled?: boolean;
-      replacementValue?: string;
+      replaceWith?: string;
     }
   };
   customRedactors?: {

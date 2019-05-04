@@ -15,7 +15,7 @@ function normalizeCustomRedactorConfig(redactorConfig: any) {
   return isSimpleRegexpCustomRedactorConfig(redactorConfig)
     ? new SimpleRegexpRedactor({
         regexpPattern: redactorConfig.regexpPattern,
-        replacementValue: redactorConfig.replaceWith
+        replaceWith: redactorConfig.replaceWith
       })
     : redactorConfig;
 }
@@ -38,7 +38,7 @@ export function composeChildRedactors<T extends AsyncCustomRedactorConfig>(opts:
       childRedactors.push(
         new SimpleRegexpRedactor({
           regexpPattern: (simpleRegexpBuiltIns as any)[regexpName],
-          replacementValue: opts.globalReplaceWith || snakeCase(regexpName).toUpperCase()
+          replaceWith: opts.globalReplaceWith || snakeCase(regexpName).toUpperCase()
         })
       );
     }
