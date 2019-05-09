@@ -169,6 +169,8 @@ Note that Google Cloud DLP already also provides a node.js library (https://www.
 - it is easy to add custom patterns or rules to redact-pii
 - `GoogleDLPRedactor` uses the `.inspectContent` instead of `.deidentifyContent` method of `@google-cloud/dlp` which has a pricing advantage for large scale redaction scenarios since you will be only charged "Inspection Units" and no additional "Transformation Units" (see https://cloud.google.com/dlp/pricing) . redact-pii only uses DLP to `identify` PII but does the replacement `transformation` by itself which saves you some 💰💰💰.
 
+In order to use Google Data Loss Prevention you must install the peer dependency yourself with `npm install --save @google-cloud/dlp` since we are no longer bundling it with this package.
+
 #### Use Google Data Loss Prevention only (this won't make use of redact-pii's built-in regex patterns)
 
 1. Prequesites:

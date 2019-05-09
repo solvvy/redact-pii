@@ -4,13 +4,18 @@ workflow "Verify the module" {
 }
 
 action "install" {
-  uses = "actions/npm@1.0.0"
+  uses = "actions/npm@master"
   args = "ci"
 }
 
+action "peer_install" {
+  uses = "actions/npm@master"
+  args = "install --no-save @google-cloud/dlp"
+}
+
 action "verify_all" {
-  needs = "install"
-  uses = "actions/npm@1.0.0"
+  needs = "peer_install"
+  uses = "actions/npm@master"
   args = "run verify_all"
 }
 
