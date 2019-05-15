@@ -182,7 +182,7 @@ In order to use Google Data Loss Prevention you must install the peer dependency
 3. Use redact pii
 
 ```js
-const { GoogleDLPRedactor } = require('redact-pii');
+const { GoogleDLPRedactor } = require('redact-pii/lib/custom/GoogleDLPRedactor');
 
 const redactor = new GoogleDLPRedactor();
 
@@ -198,7 +198,8 @@ You can create an `AsyncRedactor` and add a `GoogleDLPRedactor` as custom redact
 That way you are combining redact-pii's built-in patterns with Google DLP. The example below additionally adds a custom regexp pattern.
 
 ```js
-const { AsyncRedactor, GoogleDLPRedactor } = require('redact-pii');
+const { AsyncRedactor } = require('redact-pii');
+const { GoogleDLPRedactor } = require('redact-pii/lib/custom/GoogleDLPRedactor');
 
 const redactor = new AsyncRedactor({
   customRedactors: {

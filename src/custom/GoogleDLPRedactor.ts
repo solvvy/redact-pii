@@ -1,4 +1,5 @@
 import { IAsyncRedactor } from '../types';
+import DLP from '@google-cloud/dlp';
 
 const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 const maxFindings = 0;
@@ -120,24 +121,13 @@ export interface GoogleDLPRedactorOptions {
 
 /** @public */
 export class GoogleDLPRedactor implements IAsyncRedactor {
-  dlpClient: any;
-  dlpClientOpts: any;
+  dlpClient: typeof DLP.DlpServiceClient;
 
   constructor(private opts: GoogleDLPRedactorOptions = {}) {
-    this.dlpClientOpts = opts;
-    this.dlpClient = {};
-  }
-
-  async setup(): Promise<any> {
-    const DLP = await import('@google-cloud/dlp');
     this.dlpClient = new DLP.DlpServiceClient(this.opts.clientOptions);
   }
 
   async redactAsync(textToRedact: string): Promise<string> {
-    if (this.dlpClient === {}) {
-      await this.setup();
-    }
-
     const projectId = await this.dlpClient.getProjectId();
 
     // handle info type excludes and includes
