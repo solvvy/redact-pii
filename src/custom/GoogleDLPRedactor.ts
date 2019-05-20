@@ -1,6 +1,8 @@
 import { IAsyncRedactor } from '../types';
 import DLP from '@google-cloud/dlp';
 
+export const MAX_DLP_CONTENT_LENGTH = 524288;
+
 const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 const maxFindings = 0;
 export const defaultInfoTypes = [
@@ -117,6 +119,10 @@ export interface GoogleDLPRedactorOptions {
   includeInfoTypes?: string[];
   /** Array of DLP info type names from the default set that should be excluded */
   excludeInfoTypes?: string[];
+  /** If auto batching when content length exceeds DLP's limit should be disabled */
+  disableAutoBatchWhenContentSizeExceedsLimit?: boolean;
+  /** Maximum content size for when auto batching is turned on. */
+  maxContentSizeForBatch?: number;
 }
 
 /** @public */
@@ -126,8 +132,26 @@ export class GoogleDLPRedactor implements IAsyncRedactor {
   constructor(private opts: GoogleDLPRedactorOptions = {}) {
     this.dlpClient = new DLP.DlpServiceClient(this.opts.clientOptions);
   }
-
   async redactAsync(textToRedact: string): Promise<string> {
+    const maxContentSize = this.opts.maxContentSizeForBatch || MAX_DLP_CONTENT_LENGTH;
+
+    if (textToRedact.length > maxContentSize && !this.opts.disableAutoBatchWhenContentSizeExceedsLimit) {
+      const batchResults = [];
+      let batchStartIndex = 0;
+      while (batchStartIndex < textToRedact.length) {
+        const batchEndIndex = batchStartIndex + maxContentSize;
+        const batchText = textToRedact.substring(batchStartIndex, batchEndIndex);
+        batchResults.push(await this.doRedactAsync(batchText));
+        batchStartIndex = batchEndIndex;
+      }
+
+      return batchResults.join('');
+    } else {
+      return this.doRedactAsync(textToRedact);
+    }
+  }
+
+  async doRedactAsync(textToRedact: string): Promise<string> {
     const projectId = await this.dlpClient.getProjectId();
 
     // handle info type excludes and includes

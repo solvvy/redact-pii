@@ -167,4 +167,59 @@ describe(GoogleDLPRedactor.name, function() {
     expect(customInfoTypes).toHaveLength(1);
     expect(customInfoTypes).toEqual([customInfoType]);
   });
+
+  it('should automatically batch content over size limit', async function() {
+    const dlpRedactor = new GoogleDLPRedactor({
+      // disableAutoBatchWhenContentSizeExceedsLimit: false,
+      maxContentSizeForBatch: 10
+    });
+    mockDlpProject(dlpRedactor);
+
+    let inspectContentCalls = [];
+    dlpRedactor.dlpClient.inspectContent = options => {
+      inspectContentCalls.push(options);
+      return Promise.resolve([
+        {
+          result: {
+            findings: [{ quote: 'John', infoType: { name: 'NAME' } }]
+          }
+        }
+      ]);
+    };
+
+    const original = 'Name is John. Name is John';
+    // first occurrence of John should be missed because its on the batch boundary
+    const expected = 'Name is John. Name is NAME';
+
+    await expect(dlpRedactor.redactAsync(original)).resolves.toBe(expected);
+
+    expect(inspectContentCalls.length).toBe(3);
+  });
+
+  it('should not automatically batch content over size limit when disabled', async function() {
+    const dlpRedactor = new GoogleDLPRedactor({
+      disableAutoBatchWhenContentSizeExceedsLimit: true,
+      maxContentSizeForBatch: 10
+    });
+    mockDlpProject(dlpRedactor);
+
+    let inspectContentCalls = [];
+    dlpRedactor.dlpClient.inspectContent = options => {
+      inspectContentCalls.push(options);
+      return Promise.resolve([
+        {
+          result: {
+            findings: [{ quote: 'John', infoType: { name: 'NAME' } }]
+          }
+        }
+      ]);
+    };
+
+    const original = 'Name is John. Name is John';
+    const expected = 'Name is NAME. Name is NAME';
+
+    await expect(dlpRedactor.redactAsync(original)).resolves.toBe(expected);
+
+    expect(inspectContentCalls.length).toBe(1);
+  });
 });
