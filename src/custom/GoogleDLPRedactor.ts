@@ -135,18 +135,18 @@ export class GoogleDLPRedactor implements IAsyncRedactor {
   async redactAsync(textToRedact: string): Promise<string> {
     // default batch size is MAX_DLP_CONTENT_LENGTH/2 because some unicode characters can take more than 1 byte
     // and its difficult to get a substring of a desired target length in bytes
-    const maxContentSize = this.opts.maxContentSizeForBatch || MAX_DLP_CONTENT_LENGTH/2;
+    const maxContentSize = this.opts.maxContentSizeForBatch || MAX_DLP_CONTENT_LENGTH / 2;
 
     if (textToRedact.length > maxContentSize && !this.opts.disableAutoBatchWhenContentSizeExceedsLimit) {
-      const batchResults = [];
+      const batchPromises = [];
       let batchStartIndex = 0;
       while (batchStartIndex < textToRedact.length) {
         const batchEndIndex = batchStartIndex + maxContentSize;
         const batchText = textToRedact.substring(batchStartIndex, batchEndIndex);
-        batchResults.push(await this.doRedactAsync(batchText));
+        batchPromises.push(this.doRedactAsync(batchText));
         batchStartIndex = batchEndIndex;
       }
-
+      const batchResults = await Promise.all(batchPromises);
       return batchResults.join('');
     } else {
       return this.doRedactAsync(textToRedact);
