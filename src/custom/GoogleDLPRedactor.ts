@@ -133,7 +133,9 @@ export class GoogleDLPRedactor implements IAsyncRedactor {
     this.dlpClient = new DLP.DlpServiceClient(this.opts.clientOptions);
   }
   async redactAsync(textToRedact: string): Promise<string> {
-    const maxContentSize = this.opts.maxContentSizeForBatch || MAX_DLP_CONTENT_LENGTH;
+    // default batch size is MAX_DLP_CONTENT_LENGTH/2 because some unicode characters can take more than 1 byte
+    // and its difficult to get a substring of a desired target length in bytes
+    const maxContentSize = this.opts.maxContentSizeForBatch || MAX_DLP_CONTENT_LENGTH/2;
 
     if (textToRedact.length > maxContentSize && !this.opts.disableAutoBatchWhenContentSizeExceedsLimit) {
       const batchResults = [];

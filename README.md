@@ -218,7 +218,7 @@ redactor.redactAsync('I live at 123 Park Ave Apt 123 New York City, NY 10002 and
 
 #### Google DLP content size limit
 
-The Google DLP service has a content size limit of 524288. If the input is over this limit, the `GoogleDLPRedactor` will 
+The Google DLP service has a content size limit of 524288 bytes. If the input is over this limit, the `GoogleDLPRedactor` will 
 by default automatically split the content into smaller batches and then combine the results together again. If this 
 behavior is undesired, it can be disabled by setting the `disableAutoBatchWhenContentSizeExceedsLimit` option flag to 
 true:
