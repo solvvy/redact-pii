@@ -1,6 +1,8 @@
 import { SyncCompositeRedactor, SyncCompositeRedactorOptions } from './SyncCompositeRedactor';
 import { AsyncCompositeRedactor, AsyncCompositeRedactorOptions } from './AsyncCompositeRedactor';
 import { GoogleDLPRedactor, GoogleDLPRedactorOptions } from './custom/GoogleDLPRedactor';
+import { AwsComprehendMedicalRedactor, AwsComprehendMedicalRedactorOptions } from './custom/AwsComprehendMedicalRedactor';
+
 import {
   AsyncCustomRedactorConfig,
   CompositeRedactorOptions,
@@ -17,6 +19,8 @@ export {
   AsyncCompositeRedactorOptions,
   GoogleDLPRedactor,
   GoogleDLPRedactorOptions,
+  AwsComprehendMedicalRedactor,
+  AwsComprehendMedicalRedactorOptions,
   AsyncCustomRedactorConfig,
   CompositeRedactorOptions,
   IAsyncRedactor,
