@@ -219,6 +219,22 @@ redactor.redactAsync('I live at 123 Park Ave Apt 123 New York City, NY 10002 and
 });
 ```
 
+#### Google DLP content size limit
+
+The Google DLP service has a content size limit of 524288 bytes. If the input is over this limit, the `GoogleDLPRedactor` will 
+by default automatically split the content into smaller batches and then combine the results together again. If this 
+behavior is undesired, it can be disabled by setting the `disableAutoBatchWhenContentSizeExceedsLimit` option flag to 
+true:
+
+```js
+new GoogleDLPRedactor({ disableAutoBatchWhenContentSizeExceedsLimit: true })
+
+```
+
+There is no intelligence to try to prevent splitting the batches in the middle of a word.  If the batch happens to be 
+split in the middle of a sensitive word then that word may not be redacted. You can always perform your own intelligent
+batching prior if needed.
+
 ### Contributing
 
 #### Run tests

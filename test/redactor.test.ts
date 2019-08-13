@@ -124,7 +124,7 @@ describe('index.js', function() {
     ['my ssn: 123 45 6789.', 'my ssn: US_SOCIAL_SECURITY_NUMBER.'],
     ['my ssn: 123-45-6789.', 'my ssn: US_SOCIAL_SECURITY_NUMBER.'],
     ['my ssn: 123.45.6789.', 'my ssn: US_SOCIAL_SECURITY_NUMBER.'],
-    ['my ssn: 123456789.', 'my ssn: US_SOCIAL_SECURITY_NUMBER.']
+    ['my ssn: 123456789.', 'my ssn: DIGITS.']
   ]);
 
   TestCase('should replace phone numbers', [
