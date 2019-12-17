@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Changelog
 
+## [3.2.3][] - 2019-09-12
+- Downgrade @google-cloud/dlp to avoid memory leak in recent versions
+
+## [3.2.2][] - 2019-08-12
+- Fix bug in Google DLP Redactor with tokens overlapping and repeating
+- Update dependencies to get security fixes
+
 ## [3.2.1][] - 2019-06-20
 - Tweak the built-in US SSN regex to work better on large input by removing the optional delimters (the digits regex will already cover this situation)
 
@@ -33,7 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Google Cloud DLP redaction does not have an implicit, hard-coded 5000ms timeout anymore. If you want to set a timeout for DLP calls you have to implement it yourself. In case you're using `bluebird` as promise library consider using `.timeout`.
  
 
-[Unreleased]: https://github.com/solvvy/redact-pii/compare/v3.2.1...HEAD
+[Unreleased]: https://github.com/solvvy/redact-pii/compare/v3.2.3...HEAD
+[3.2.3]: https://github.com/solvvy/redact-pii/compare/v3.2.2...v3.2.3
+[3.2.2]: https://github.com/solvvy/redact-pii/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/solvvy/redact-pii/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/solvvy/redact-pii/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/solvvy/redact-pii/compare/v3.0.1...v3.1.0

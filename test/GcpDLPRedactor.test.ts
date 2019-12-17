@@ -222,4 +222,146 @@ describe(GoogleDLPRedactor.name, function() {
 
     expect(inspectContentCalls.length).toBe(1);
   });
+
+  it('should not replace tokens for overlapping findings', async function() {
+    const original = 'My name is John SON.';
+    const expected = 'My name is PERSON_NAME.';
+
+    dlpRedactor.dlpClient.inspectContent = () =>
+      Promise.resolve([
+        {
+          result: {
+            findings: [
+              {
+                quote: 'John SON',
+                infoType: { name: 'PERSON_NAME' },
+                location: { byteRange: { start: '11', end: '19' } }
+              },
+              { quote: 'John', infoType: { name: 'FIRST_NAME' }, location: { byteRange: { start: '11', end: '15' } } },
+              { quote: 'SON', infoType: { name: 'LAST_NAME' }, location: { byteRange: { start: '15', end: '19' } } }
+            ]
+          }
+        }
+      ]);
+
+    await expect(dlpRedactor.redactAsync(original)).resolves.toBe(expected);
+  });
+
+  it('should prefer higher likelihood when removing overlapping findings', async function() {
+    const original = 'My name is John SON.';
+    const expected = 'My name is LIKELY_NAME.';
+
+    dlpRedactor.dlpClient.inspectContent = () =>
+      Promise.resolve([
+        {
+          result: {
+            findings: [
+              {
+                quote: 'John',
+                infoType: { name: 'FIRST_NAME' },
+                location: { byteRange: { start: '11', end: '15' } },
+                likelihood: 'POSSIBLE'
+              },
+              {
+                quote: 'SON',
+                infoType: { name: 'LAST_NAME' },
+                location: { byteRange: { start: '15', end: '19' } },
+                likelihood: 'POSSIBLE'
+              },
+              {
+                quote: 'John SON',
+                infoType: { name: 'POSSIBLE_NAME' },
+                location: { byteRange: { start: '11', end: '19' } },
+                likelihood: 'POSSIBLE'
+              },
+              {
+                quote: 'John SON',
+                infoType: { name: 'LIKELY_NAME' },
+                location: { byteRange: { start: '11', end: '19' } },
+                likelihood: 'LIKELY'
+              }
+            ]
+          }
+        }
+      ]);
+
+    await expect(dlpRedactor.redactAsync(original)).resolves.toBe(expected);
+  });
+
+  it('should remove overlapping findings where a finding is completely contained inside another finding', async function() {
+    const original = 'My name is John Francis Doe.';
+    const expected = 'My name is FULL_NAME.';
+
+    dlpRedactor.dlpClient.inspectContent = () =>
+      Promise.resolve([
+        {
+          result: {
+            findings: [
+              {
+                quote: 'Francis',
+                infoType: { name: 'MIDDLE_NAME' },
+                location: { byteRange: { start: '16', end: '23' } },
+                likelihood: 'POSSIBLE'
+              },
+              {
+                quote: 'John Francis Doe',
+                infoType: { name: 'FULL_NAME' },
+                location: { byteRange: { start: '11', end: '27' } },
+                likelihood: 'POSSIBLE'
+              }
+            ]
+          }
+        }
+      ]);
+
+    await expect(dlpRedactor.redactAsync(original)).resolves.toBe(expected);
+  });
+
+  it('should remove overlapping findings where a finding is completely contained inside another finding and respect likelihood', async function() {
+    const original = 'My name is John Francis Doe.';
+    const expected = 'My name is John MIDDLE_NAME Doe.';
+
+    dlpRedactor.dlpClient.inspectContent = () =>
+      Promise.resolve([
+        {
+          result: {
+            findings: [
+              {
+                quote: 'Francis',
+                infoType: { name: 'MIDDLE_NAME' },
+                location: { byteRange: { start: '16', end: '23' } },
+                likelihood: 'LIKELY'
+              },
+              {
+                quote: 'John Francis Doe',
+                infoType: { name: 'FULL_NAME' },
+                location: { byteRange: { start: '11', end: '27' } },
+                likelihood: 'POSSIBLE'
+              }
+            ]
+          }
+        }
+      ]);
+
+    await expect(dlpRedactor.redactAsync(original)).resolves.toBe(expected);
+  });
+
+  it('should not replace tokens for findings quotes that are too small', async function() {
+    const original = 'My name is John S and I like Snow.';
+    const expected = 'My name is FIRST_NAME S and I like Snow.';
+
+    dlpRedactor.dlpClient.inspectContent = () =>
+      Promise.resolve([
+        {
+          result: {
+            findings: [
+              { quote: 'John', infoType: { name: 'FIRST_NAME' }, location: { byteRange: { start: '11', end: '15' } } },
+              { quote: 'S', infoType: { name: 'LAST_NAME' }, location: { byteRange: { start: '16', end: '17' } } }
+            ]
+          }
+        }
+      ]);
+
+    await expect(dlpRedactor.redactAsync(original)).resolves.toBe(expected);
+  });
 });

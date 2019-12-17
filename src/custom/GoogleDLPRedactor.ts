@@ -1,7 +1,10 @@
+import { get } from 'lodash';
 import { IAsyncRedactor } from '../types';
 import DLP from '@google-cloud/dlp';
 
 export const MAX_DLP_CONTENT_LENGTH = 524288;
+// a finding quote length that is too short (e.g. 1 char like "S") causes too many false replacements
+const MIN_FINDING_QUOTE_LENGTH = 2;
 
 const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';
 const maxFindings = 0;
@@ -107,6 +110,63 @@ const likelihoodPriority: { [likelyHoodName: string]: number } = {
 
 const includeQuote = true;
 
+interface Finding {
+  likelihood: string;
+  quote: string;
+  infoType: {
+    name: string;
+  };
+  location: {
+    byteRange: {
+      start: string;
+      end: string;
+    };
+  };
+}
+
+// finding location.byteRange.start and end are strings for some reason, so must convert to numbers
+const getFindingStart = (finding: Finding) => Number(get(finding, 'location.byteRange.start', 0));
+const getFindingEnd = (finding: Finding) => Number(get(finding, 'location.byteRange.end', 0));
+
+/**
+ * Remove overlapping findings which can cause messed up tokens.
+ *
+ * For example "My name is John D." will cause 3 findings:
+ *  - PERSON_NAME for text "John S." at range 11-17
+ *  - FIRST_NAME for text "John" at range 11-15
+ *  - LAST_NAME for text "S." at range 15-17
+ *
+ * The FIRST_NAME and LAST_NAME findings overlap the first finding so there is no need to search for them
+ */
+function removeOverlappingFindings(findings: Finding[]): Finding[] {
+  // early return if only have 0 or 1 findings
+  if (findings.length <= 1) {
+    return findings;
+  }
+
+  // sort findings by ascending start
+  findings.sort((a, b) => getFindingStart(a) - getFindingStart(b));
+
+  // remove findings that overlap (but keep the one with higher likelihood)
+  const resultFindings = [findings[0]];
+  for (let i = 1; i < findings.length; i++) {
+    const current = findings[i];
+    const previous = resultFindings[resultFindings.length - 1];
+
+    // when findings overlap, keep the one with the higher likelihood
+    if (getFindingStart(current) < getFindingEnd(previous)) {
+      if (likelihoodPriority[current.likelihood] > likelihoodPriority[previous.likelihood]) {
+        resultFindings[resultFindings.length - 1] = current;
+      }
+    } else {
+      // no overlap
+      resultFindings.push(current);
+    }
+  }
+
+  return resultFindings;
+}
+
 /** @public */
 export interface GoogleDLPRedactorOptions {
   /** options to pass down to the Google Cloud DLP client. Check https://cloud.google.com/nodejs/docs/reference/dlp/0.10.x/v2.DlpServiceClient for the available options */
@@ -180,15 +240,18 @@ export class GoogleDLPRedactor implements IAsyncRedactor {
     const findings = response[0].result.findings;
 
     if (findings.length > 0) {
+      // this is necessary to prevent tokens getting messed up with other repeated partial tokens (e.g. "my name is PERLALALALALALALALALALALALALALALALALAL...")
+      const findingsWithoutOverlaps = removeOverlappingFindings(findings);
+
       // sort findings by highest likelihood first
-      findings.sort(function(a: any, b: any) {
+      findingsWithoutOverlaps.sort(function(a: any, b: any) {
         return likelihoodPriority[b.likelihood] - likelihoodPriority[a.likelihood];
       });
 
       // in order of highest likelihood replace finding with info type name
-      findings.forEach((finding: any) => {
+      findingsWithoutOverlaps.forEach((finding: any) => {
         let find = finding.quote;
-        if (find !== finding.infoType.name) {
+        if (find !== finding.infoType.name && find.length >= MIN_FINDING_QUOTE_LENGTH) {
           let numSearches = 0;
           while (numSearches++ < 1000 && textToRedact.indexOf(find) >= 0) {
             textToRedact = textToRedact.replace(find, finding.infoType.name);
