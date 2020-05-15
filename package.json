@@ -6,6 +6,7 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "build": "del lib && tsc --pretty",
+    "prepare": "npm run build",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run verify_all && npm run build",
     "verify_all": "npm run typecheck && npm test && npm run test_prettier && changelog-verify CHANGELOG.md",

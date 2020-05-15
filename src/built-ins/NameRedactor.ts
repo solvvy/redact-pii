@@ -13,7 +13,7 @@ const genericName = new RegExp('( ?(([A-Z][a-z]+)|([A-Z]\\.)))+([,.]|[,.]?$)', '
 const wellKnownNames = new RegExp('\\b(\\s*)(\\s*(' + _wellKnownNames.join('|') + '))+\\b', 'gim');
 
 export class NameRedactor implements ISyncRedactor {
-  constructor(private replaceWith = 'PERSON_NAME') {}
+  constructor(private replaceWith = 'PERSON_NAME') { }
 
   redact(textToRedact: string) {
     greetingOrClosing.lastIndex = 0;
