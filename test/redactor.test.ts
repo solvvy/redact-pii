@@ -7,7 +7,7 @@ const compositeRedactorWithDLP = new AsyncRedactor({
   }
 });
 
-describe('index.js', function() {
+describe('index.js', function () {
   const runGoogleDLPTests = !!process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
   type InputAssertionTuple = [string, string, string?];
@@ -23,7 +23,7 @@ describe('index.js', function() {
     });
   }
 
-  TestCase.only = function(description: string, thingsToTest: Array<InputAssertionTuple>) {
+  TestCase.only = function (description: string, thingsToTest: Array<InputAssertionTuple>) {
     it.only(description, async () => {
       for (const [input, syncOutput, googleDLPOutput] of thingsToTest) {
         expect(redactor.redact(input)).toBe(syncOutput);
@@ -34,13 +34,13 @@ describe('index.js', function() {
     });
   };
 
-  it('should be speedy', async function() {
+  it('should be speedy', async function () {
     for (let i = 0; i < 100; i++) {
       redactor.redact('hi I had a quick question about using the service');
     }
   }, 100);
 
-  it('should be speedy even with lots of newlines', async function() {
+  it('should be speedy even with lots of newlines', async function () {
     let text =
       'foo\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nbar';
     redactor.redact(text);
@@ -179,12 +179,22 @@ describe('index.js', function() {
     ['user: thislibrary\npass: 1$d0P3!', 'USERNAME\nPASSWORD']
   ]);
 
-  it('should respect a custom string replacement', function() {
+  it('should respect a custom string replacement', function () {
     let customRedactor = new SyncRedactor({ globalReplaceWith: 'REDACTED' });
     expect(customRedactor.redact('my ip: 10.1.1.235.')).toBe('my ip: REDACTED.');
   });
 
-  it('should accept new patterns', function() {
+  it('should respect a custom replaceWith for names', function () {
+    let customRedactor = new SyncRedactor({ builtInRedactors: { names: { replaceWith: 'N-A-M-E' } } });
+    expect(customRedactor.redact('Subject. Hi David Johnson.')).toBe('Subject. Hi N-A-M-E.');
+  });
+
+  it('should respect a custom replaceWith for simpleRegex', function () {
+    let customRedactor = new SyncRedactor({ builtInRedactors: { ipAddress: { replaceWith: '{{IP_ADDRESS}}' } } });
+    expect(customRedactor.redact('my ip: 10.1.1.235.')).toBe('my ip: {{IP_ADDRESS}}.');
+  });
+
+  it('should accept new patterns', function () {
     let redactor = new SyncRedactor({
       customRedactors: { after: [{ regexpPattern: /\b(cat|dog|cow)s?\b/gi, replaceWith: 'ANIMAL' }] }
     });
@@ -213,7 +223,7 @@ describe('index.js', function() {
   ]);
 
   runGoogleDLPTests &&
-    it('[integration] should redact non english text', async function() {
+    it('[integration] should redact non english text', async function () {
       await expect(compositeRedactorWithDLP.redactAsync('我的名字是王')).resolves.toBe('我的名字是王');
       await expect(compositeRedactorWithDLP.redactAsync('我的卡号是 1234')).resolves.toBe('PERSON_NAME是 DIGITS');
       await expect(compositeRedactorWithDLP.redactAsync('我的电话是 444-332-343')).resolves.toBe(
