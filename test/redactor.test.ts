@@ -1,35 +1,22 @@
 import { GoogleDLPRedactor, AsyncRedactor, SyncRedactor } from '../src';
 
 const redactor = new SyncRedactor();
-const compositeRedactorWithDLP = new AsyncRedactor({
-  customRedactors: {
-    after: [new GoogleDLPRedactor()]
-  }
-});
 
 describe('index.js', function() {
-  const runGoogleDLPTests = !!process.env.GOOGLE_APPLICATION_CREDENTIALS;
-
   type InputAssertionTuple = [string, string, string?];
 
   function TestCase(description: string, thingsToTest: Array<InputAssertionTuple>) {
     it(description, async () => {
-      for (const [input, syncOutput, googleDLPOutput] of thingsToTest) {
+      for (const [input, syncOutput] of thingsToTest) {
         expect(redactor.redact(input)).toBe(syncOutput);
-        if (runGoogleDLPTests && googleDLPOutput) {
-          await expect(compositeRedactorWithDLP.redactAsync(input)).resolves.toBe(googleDLPOutput);
-        }
       }
     });
   }
 
   TestCase.only = function(description: string, thingsToTest: Array<InputAssertionTuple>) {
     it.only(description, async () => {
-      for (const [input, syncOutput, googleDLPOutput] of thingsToTest) {
+      for (const [input, syncOutput] of thingsToTest) {
         expect(redactor.redact(input)).toBe(syncOutput);
-        if (googleDLPOutput) {
-          await expect(compositeRedactorWithDLP.redactAsync(input)).resolves.toBe(googleDLPOutput);
-        }
       }
     });
   };
@@ -211,13 +198,4 @@ describe('index.js', function() {
     ['before http://www.example.com/foo/bar?foo=bar#/foo/bar after', 'before URL after'],
     ['My homepage is http://example.com\nAnd that is that.', 'My homepage is URL\nAnd that is that.']
   ]);
-
-  runGoogleDLPTests &&
-    it('[integration] should redact non english text', async function() {
-      await expect(compositeRedactorWithDLP.redactAsync('我的名字是王')).resolves.toBe('我的名字是王');
-      await expect(compositeRedactorWithDLP.redactAsync('我的卡号是 1234')).resolves.toBe('PERSON_NAME是 DIGITS');
-      await expect(compositeRedactorWithDLP.redactAsync('我的电话是 444-332-343')).resolves.toBe(
-        '我的电话是 PHONE_NUMBER'
-      );
-    });
 });
