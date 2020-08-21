@@ -4,12 +4,11 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: install
-      uses: actions/npm@1.0.0
-      with:
-        args: ci
-    - name: verify_all
-      uses: actions/npm@1.0.0
-      with:
-        args: run verify_all
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node: '10.x'
+      - name: install
+        run: npm install
+      - name: verify_all
+        run: npm run verify_all
