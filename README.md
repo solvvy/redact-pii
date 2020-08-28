@@ -160,7 +160,7 @@ const redactor = new SyncRedactor({
 ### Use Google Data Loss Prevention
 
 [Google Data Loss Prevention (DLP)](https://cloud.google.com/dlp/) has an extensive rule set to identify and redact PII that goes beyond just simple regex patterns. Consider using DLP in-addition to the built-in patterns of redact-pii for high value / sensitive data applications.
-Also we strongly advice on using DLP if you have to redact non-english data since redact-pii's built-in patterns cover mostly US english patterns only and have no support for non-latin characters, whereas DLP has extensive support for international IDs, Chinese and Korean characters etc..
+Also we strongly advise on using DLP if you have to redact non-english data since redact-pii's built-in patterns cover mostly US english patterns only and have no support for non-latin characters, whereas DLP has extensive support for international IDs, Chinese and Korean characters etc..
 `redact-pii` provides a small wrapper `GoogleDLPRedactor` around DLP that can be used seperately or in conjunction with redact-pii's built-in patterns.
 Note that Google Cloud DLP already also provides a node.js library (https://www.npmjs.com/package/@google-cloud/dlp) that can be used directly to redact data. You have to decide yourself if you want to use the `GoogleDLPRedactor` wrapper or `@google-cloud/dlp` directly. The main differentiators of using `redact-pii` / `GoogleDLPRedactor` are:
 
