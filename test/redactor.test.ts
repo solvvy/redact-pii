@@ -144,7 +144,8 @@ describe('index.js', function() {
 
   TestCase('should replace email addresses', [
     ['my email: joe123@solvvy.co.uk.', 'my email: EMAIL_ADDRESS.'],
-    ['my email is other+foobar@t.co.', 'my email is EMAIL_ADDRESS.']
+    ['my email is other+foobar@t.co.', 'my email is EMAIL_ADDRESS.'],
+    ['my email is other+foobar@t-bbb.co.', 'my email is EMAIL_ADDRESS.'],
   ]);
 
   TestCase('should replace street addresses', [
