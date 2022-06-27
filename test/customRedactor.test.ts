@@ -4,24 +4,24 @@ const redactor = new SyncRedactor();
 const compositeRedactorWithDLP = new AsyncRedactor({
   builtInRedactors: {
     zipcode: {
-      enabled: false
+      enabled: false,
     },
     digits: {
-      enabled: false
-    }
+      enabled: false,
+    },
   },
   customRedactors: {
     before: [
       {
         regexpPattern: /(banana|apple|orange)/,
-        replaceWith: 'FOOD'
-      }
+        replaceWith: 'FOOD',
+      },
     ],
-    after: [new GoogleDLPRedactor()]
-  }
+    after: [new GoogleDLPRedactor()],
+  },
 });
 
-describe('index.js', function() {
+describe('index.js', function () {
   const runGoogleDLPTests = !!process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
   type InputAssertionTuple = [string, string, string?];
@@ -37,7 +37,7 @@ describe('index.js', function() {
     });
   }
 
-  TestCase.only = function(description: string, thingsToTest: Array<InputAssertionTuple>) {
+  TestCase.only = function (description: string, thingsToTest: Array<InputAssertionTuple>) {
     it.only(description, async () => {
       for (const [input, syncOutput, googleDLPOutput] of thingsToTest) {
         expect(redactor.redact(input)).toBe(syncOutput);
@@ -51,7 +51,7 @@ describe('index.js', function() {
   TestCase('should redact PII', [["Hey it's David Johnson with 1234", "Hey it's PERSON_NAME with DIGITS"]]);
 
   runGoogleDLPTests &&
-    it('[integration] should redact non english text', async function() {
+    it('[integration] should redact non english text', async function () {
       jest.setTimeout(7000);
       await expect(compositeRedactorWithDLP.redactAsync('我的名字是王')).resolves.toBe('我的名字是王');
       await expect(compositeRedactorWithDLP.redactAsync('我的卡号是 1234')).resolves.toBe('PERSON_NAME是 1234');
