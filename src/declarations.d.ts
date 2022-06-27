@@ -1,1 +1,1 @@
-declare module '@google-cloud/dlp';
+// declare module '@google-cloud/dlp';
