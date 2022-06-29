@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Changelog
 
-## [3.3.0-beta.1][] - 2022-06-27
+## [3.3.0][] - 2022-06-27
 
 - Updating dependent libraries to latest
 
@@ -59,3 +59,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [3.1.0]: https://github.com/solvvy/redact-pii/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/solvvy/redact-pii/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/solvvy/redact-pii/tree/v3.0.0
+[unreleased]: https://github.com/solvvy/redact-pii/compare/v3.3.0-beta.1...HEAD
+[3.3.0-beta.1]: https://github.com/solvvy/redact-pii/tree/v3.3.0-beta.1

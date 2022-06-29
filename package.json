@@ -1,6 +1,6 @@
 {
   "name": "redact-pii",
-  "version": "3.3.0-beta.1",
+  "version": "3.3.0",
   "description": "Remove personally identifiable information from text.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -13,9 +13,6 @@
     "test_prettier": "prettier './+(src|test)/**/*.+(js|ts|tsx)' --list-different",
     "prettier": "prettier './+(src|test)/**/*.+(js|ts|tsx)' --write",
     "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md"
-  },
-  "engines": {
-    "node": ">8.0.0"
   },
   "repository": {
     "type": "git",
