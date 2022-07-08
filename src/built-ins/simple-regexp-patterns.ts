@@ -8,7 +8,8 @@ export const streetAddress = new RegExp(
   'gi'
 );
 export const zipcode = /\b\d{5}\b(-\d{4})?\b/g;
-export const phoneNumber = /(\(?\+?[0-9]{1,2}\)?[-. ]?)?(\(?[0-9]{3}\)?|[0-9]{3})[-. ]?([0-9]{3}[-. ]?[0-9]{4}|\b[A-Z0-9]{7}\b)/g;
+export const phoneNumber =
+  /(\(?\+?[0-9]{1,2}\)?[-. ]?)?(\(?[0-9]{3}\)?|[0-9]{3})[-. ]?([0-9]{3}[-. ]?[0-9]{4}|\b[A-Z0-9]{7}\b)/g;
 export const ipAddress = /(\d{1,3}(\.\d{1,3}){3}|[0-9A-F]{4}(:[0-9A-F]{4}){5}(::|(:0000)+))/gi;
 export const usSocialSecurityNumber = /\b\d{3}[ -.]\d{2}[ -.]\d{4}\b/g;
 export const emailAddress = /([a-z0-9_\-.+]+)@\w+(\.\w+)*/gi;

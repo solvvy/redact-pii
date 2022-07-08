@@ -6,8 +6,8 @@ export class SimpleRegexpRedactor implements ISyncRedactor {
   replaceWith: string;
 
   constructor({
-    replaceWith = snakeCase(name).toUpperCase(),
-    regexpPattern: regexpMatcher
+    replaceWith = snakeCase().toUpperCase(),
+    regexpPattern: regexpMatcher,
   }: {
     replaceWith: string;
     regexpPattern: RegExp;

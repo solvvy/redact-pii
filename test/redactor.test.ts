@@ -3,11 +3,11 @@ import { GoogleDLPRedactor, AsyncRedactor, SyncRedactor } from '../src';
 const redactor = new SyncRedactor();
 const compositeRedactorWithDLP = new AsyncRedactor({
   customRedactors: {
-    after: [new GoogleDLPRedactor()]
-  }
+    after: [new GoogleDLPRedactor()],
+  },
 });
 
-describe('index.js', function() {
+describe('index.js', function () {
   const runGoogleDLPTests = !!process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
   type InputAssertionTuple = [string, string, string?];
@@ -23,7 +23,7 @@ describe('index.js', function() {
     });
   }
 
-  TestCase.only = function(description: string, thingsToTest: Array<InputAssertionTuple>) {
+  TestCase.only = function (description: string, thingsToTest: Array<InputAssertionTuple>) {
     it.only(description, async () => {
       for (const [input, syncOutput, googleDLPOutput] of thingsToTest) {
         expect(redactor.redact(input)).toBe(syncOutput);
@@ -34,13 +34,13 @@ describe('index.js', function() {
     });
   };
 
-  it('should be speedy', async function() {
+  it('should be speedy', async function () {
     for (let i = 0; i < 100; i++) {
       redactor.redact('hi I had a quick question about using the service');
     }
   }, 100);
 
-  it('should be speedy even with lots of newlines', async function() {
+  it('should be speedy even with lots of newlines', async function () {
     let text =
       'foo\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nbar';
     redactor.redact(text);
@@ -49,8 +49,8 @@ describe('index.js', function() {
   TestCase('should redact PII', [
     [
       "Hey it's David Johnson with ACME Corp. Give me a call at 555-555-5555",
-      "Hey it's PERSON_NAME with ACME Corp. Give me a call at PHONE_NUMBER"
-    ]
+      "Hey it's PERSON_NAME with ACME Corp. Give me a call at PHONE_NUMBER",
+    ],
   ]);
 
   TestCase('should replace names', [
@@ -76,36 +76,36 @@ describe('index.js', function() {
 
     [
       'blah blah\n\n\nAll the best,\n\n--Meg C.\n\nAcme Support',
-      'blah blah\n\n\nAll the best,\n\n--PERSON_NAME\n\nAcme Support'
+      'blah blah\n\n\nAll the best,\n\n--PERSON_NAME\n\nAcme Support',
     ],
 
     [
       'blah blah\n\n\nAll the best,\n\n-John\n\nAcme Support',
-      'blah blah\n\n\nAll the best,\n\n-PERSON_NAME\n\nAcme Support'
+      'blah blah\n\n\nAll the best,\n\n-PERSON_NAME\n\nAcme Support',
     ],
 
     ['blah blah\nthanks Joshua.\n blah blah', 'blah blah\nthanks PERSON_NAME.\n blah blah'],
 
     [
       'Hi David Johnson,\nHow are you?\n\nthanks Joshua.\n blah blah',
-      'Hi PERSON_NAME,\nHow are you?\n\nthanks PERSON_NAME.\n blah blah'
+      'Hi PERSON_NAME,\nHow are you?\n\nthanks PERSON_NAME.\n blah blah',
     ],
 
     ['Subject. Hi David Johnson.', 'Subject. Hi PERSON_NAME.'],
 
     [
       'to hearing from you.\n\nAll the best,\n\nAngel\nCustomer Experience\nwww.foo.com',
-      'to hearing from you.\n\nAll the best,\n\nPERSON_NAME\nCustomer Experience\nwww.foo.com'
+      'to hearing from you.\n\nAll the best,\n\nPERSON_NAME\nCustomer Experience\nwww.foo.com',
     ],
     [
       'getting this sorted out.\n\nKindest regards,\n\nFoo Bar\nCustomer Experience',
-      'getting this sorted out.\n\nKindest regards,\n\nPERSON_NAME\nCustomer Experience'
+      'getting this sorted out.\n\nKindest regards,\n\nPERSON_NAME\nCustomer Experience',
     ],
     ['blah.\n\nAffectionately,\n\nFoo Bar\nblah', 'blah.\n\nAffectionately,\n\nPERSON_NAME\nblah'],
     ['blah.\n\nHappy Meditating!\n\nFoo Bar\nblah', 'blah.\n\nHappy Meditating!\n\nPERSON_NAME\nblah'],
     ['blah.\n\nTake care!\n\nFoo Bar\nblah', 'blah.\n\nTake care!\n\nPERSON_NAME\nblah'],
     ['blah.\n\nHave a wonderful weekend.\n\nFoo Bar\nblah', 'blah.\n\nHave a wonderful weekend.\n\nPERSON_NAME\nblah'],
-    ['blah blah. Thanks -Jon', 'blah blah. Thanks -PERSON_NAME']
+    ['blah blah. Thanks -Jon', 'blah blah. Thanks -PERSON_NAME'],
   ]);
 
   TestCase('should replace credit card numbers', [
@@ -117,14 +117,14 @@ describe('index.js', function() {
     ['my AMEX 3rd card: 123456789012345.', 'my AMEX 3rd card: CREDIT_CARD_NUMBER.'],
     ['my DINERS card: 1234 567890 1234.', 'my DINERS card: CREDIT_CARD_NUMBER.'],
     ['my DINERS 2nd card: 1234-567890-1234.', 'my DINERS 2nd card: CREDIT_CARD_NUMBER.'],
-    ['my DINERS 3rd card: 12345678901234.', 'my DINERS 3rd card: CREDIT_CARD_NUMBER.']
+    ['my DINERS 3rd card: 12345678901234.', 'my DINERS 3rd card: CREDIT_CARD_NUMBER.'],
   ]);
 
   TestCase('should replace ssn', [
     ['my ssn: 123 45 6789.', 'my ssn: US_SOCIAL_SECURITY_NUMBER.'],
     ['my ssn: 123-45-6789.', 'my ssn: US_SOCIAL_SECURITY_NUMBER.'],
     ['my ssn: 123.45.6789.', 'my ssn: US_SOCIAL_SECURITY_NUMBER.'],
-    ['my ssn: 123456789.', 'my ssn: DIGITS.']
+    ['my ssn: 123456789.', 'my ssn: DIGITS.'],
   ]);
 
   TestCase('should replace phone numbers', [
@@ -133,60 +133,60 @@ describe('index.js', function() {
 
     ['my phone: 555.123.1234.', 'my phone: PHONE_NUMBER.'],
 
-    ['my phone: 5551231234.', 'my phone: PHONE_NUMBER.']
+    ['my phone: 5551231234.', 'my phone: PHONE_NUMBER.'],
   ]);
 
   TestCase('should replace ip addresses', [
     ['my ip: 10.1.1.235.', 'my ip: IP_ADDRESS.'],
     ['my ip: 1234:ABCD:23AF:1111:2222:3333:0000:0000:0000.', 'my ip: IP_ADDRESS.'],
-    ['my ip: 1234:ABCD:23AF:1111:2222:3333::!', 'my ip: IP_ADDRESS!']
+    ['my ip: 1234:ABCD:23AF:1111:2222:3333::!', 'my ip: IP_ADDRESS!'],
   ]);
 
   TestCase('should replace email addresses', [
     ['my email: joe123@solvvy.co.uk.', 'my email: EMAIL_ADDRESS.'],
-    ['my email is other+foobar@t.co.', 'my email is EMAIL_ADDRESS.']
+    ['my email is other+foobar@t.co.', 'my email is EMAIL_ADDRESS.'],
   ]);
 
   TestCase('should replace street addresses', [
     [
       'I live at 123 Park Ave Apt 123 New York City, NY 10002',
       'I live at STREET_ADDRESS New York City, NY ZIPCODE',
-      'I live at STREET_ADDRESS US_STATE City, LOCATION ZIPCODE'
+      'I live at STREET_ADDRESS US_STATE City, LOCATION ZIPCODE',
     ],
     [
       'my address is 56 N First St NY 90210',
       'my address is STREET_ADDRESS NY ZIPCODE',
-      'my address is STREET_ADDRESS LOCATION ZIPCODE'
-    ]
+      'my address is STREET_ADDRESS LOCATION ZIPCODE',
+    ],
   ]);
 
   TestCase('should not replace street words in context', [
     [
       'Oh no worries I live right down the street and up the boulevard',
-      'Oh no worries I live right down the street and up the boulevard'
+      'Oh no worries I live right down the street and up the boulevard',
     ],
     [
       'There is no way that I will pay for that circle in court',
-      'There is no way that I will pay for that circle in court'
+      'There is no way that I will pay for that circle in court',
     ],
-    ['I have thought of many ways to finish that drive', 'I have thought of many ways to finish that drive']
+    ['I have thought of many ways to finish that drive', 'I have thought of many ways to finish that drive'],
   ]);
 
   TestCase('should replace usernames and passwords', [
     ['here is my username: foobar and my password: baz123', 'here is my USERNAME and my PASSWORD'],
     ['here is the login info: foobar\npassword', 'here is the CREDENTIALS'],
 
-    ['user: thislibrary\npass: 1$d0P3!', 'USERNAME\nPASSWORD']
+    ['user: thislibrary\npass: 1$d0P3!', 'USERNAME\nPASSWORD'],
   ]);
 
-  it('should respect a custom string replacement', function() {
+  it('should respect a custom string replacement', function () {
     let customRedactor = new SyncRedactor({ globalReplaceWith: 'REDACTED' });
     expect(customRedactor.redact('my ip: 10.1.1.235.')).toBe('my ip: REDACTED.');
   });
 
-  it('should accept new patterns', function() {
+  it('should accept new patterns', function () {
     let redactor = new SyncRedactor({
-      customRedactors: { after: [{ regexpPattern: /\b(cat|dog|cow)s?\b/gi, replaceWith: 'ANIMAL' }] }
+      customRedactors: { after: [{ regexpPattern: /\b(cat|dog|cow)s?\b/gi, replaceWith: 'ANIMAL' }] },
     });
     expect(redactor.redact('I love cats, dogs, and cows')).toBe('I love ANIMAL, ANIMAL, and ANIMAL');
   });
@@ -201,7 +201,7 @@ describe('index.js', function() {
     ['Reset password url is https://example.com/reset/password/12345', 'Reset password url is URL'],
     [
       'complex http://user@pass:example.com:8080/reset/password/12345?foo=bar&hi=there#/app works?',
-      'complex URL works?'
+      'complex URL works?',
     ],
     ['before http://www.example.com after', 'before URL after'],
     ['before http://www.example.com:123 after', 'before URL after'],
@@ -209,11 +209,11 @@ describe('index.js', function() {
     ['before http://www.example.com/foo/bar after', 'before URL after'],
     ['before http://www.example.com/foo/bar?foo=bar after', 'before URL after'],
     ['before http://www.example.com/foo/bar?foo=bar#/foo/bar after', 'before URL after'],
-    ['My homepage is http://example.com\nAnd that is that.', 'My homepage is URL\nAnd that is that.']
+    ['My homepage is http://example.com\nAnd that is that.', 'My homepage is URL\nAnd that is that.'],
   ]);
 
   runGoogleDLPTests &&
-    it('[integration] should redact non english text', async function() {
+    it('[integration] should redact non english text', async function () {
       await expect(compositeRedactorWithDLP.redactAsync('我的名字是王')).resolves.toBe('我的名字是王');
       await expect(compositeRedactorWithDLP.redactAsync('我的卡号是 1234')).resolves.toBe('PERSON_NAME是 DIGITS');
       await expect(compositeRedactorWithDLP.redactAsync('我的电话是 444-332-343')).resolves.toBe(

@@ -7,7 +7,7 @@ import {
   IAsyncRedactor,
   CompositeRedactorOptions,
   SyncCustomRedactorConfig,
-  ISyncRedactor
+  ISyncRedactor,
 } from './types';
 import { isSimpleRegexpCustomRedactorConfig } from './utils';
 
@@ -15,7 +15,7 @@ function normalizeCustomRedactorConfig(redactorConfig: any) {
   return isSimpleRegexpCustomRedactorConfig(redactorConfig)
     ? new SimpleRegexpRedactor({
         regexpPattern: redactorConfig.regexpPattern,
-        replaceWith: redactorConfig.replaceWith
+        replaceWith: redactorConfig.replaceWith,
       })
     : redactorConfig;
 }
@@ -26,7 +26,7 @@ export function composeChildRedactors<T extends AsyncCustomRedactorConfig>(opts:
     : Array<IAsyncRedactor | ISyncRedactor> = [] as any;
 
   if (opts.customRedactors && opts.customRedactors.before) {
-    opts.customRedactors.before.map(normalizeCustomRedactorConfig).forEach(redactor => childRedactors.push(redactor));
+    opts.customRedactors.before.map(normalizeCustomRedactorConfig).forEach((redactor) => childRedactors.push(redactor));
   }
 
   for (const regexpName of Object.keys(simpleRegexpBuiltIns)) {
@@ -38,7 +38,7 @@ export function composeChildRedactors<T extends AsyncCustomRedactorConfig>(opts:
       childRedactors.push(
         new SimpleRegexpRedactor({
           regexpPattern: (simpleRegexpBuiltIns as any)[regexpName],
-          replaceWith: opts.globalReplaceWith || snakeCase(regexpName).toUpperCase()
+          replaceWith: opts.globalReplaceWith || snakeCase(regexpName).toUpperCase(),
         })
       );
     }
@@ -49,7 +49,7 @@ export function composeChildRedactors<T extends AsyncCustomRedactorConfig>(opts:
   }
 
   if (opts.customRedactors && opts.customRedactors.after) {
-    opts.customRedactors.after.map(normalizeCustomRedactorConfig).forEach(redactor => childRedactors.push(redactor));
+    opts.customRedactors.after.map(normalizeCustomRedactorConfig).forEach((redactor) => childRedactors.push(redactor));
   }
   return childRedactors;
 }

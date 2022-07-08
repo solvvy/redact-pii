@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import { IAsyncRedactor } from '../types';
-import DLP from '@google-cloud/dlp';
+import DLP, { DlpServiceClient } from '@google-cloud/dlp';
 
 export const MAX_DLP_CONTENT_LENGTH = 524288;
 // a finding quote length that is too short (e.g. 1 char like "S") causes too many false replacements
@@ -86,17 +86,17 @@ export const defaultInfoTypes = [
   { name: 'PERU_DNI_NUMBER' },
   { name: 'PORTUGAL_CDC_NUMBER' },
   { name: 'URUGUAY_CDI_NUMBER' },
-  { name: 'VENEZUELA_CDI_NUMBER' }
+  { name: 'VENEZUELA_CDI_NUMBER' },
 ];
 const customInfoTypes = [
   {
     infoType: {
-      name: 'URL'
+      name: 'URL',
     },
     regex: {
-      pattern: '([^\\s:/?#]+):\\/\\/([^/?#\\s]*)([^?#\\s]*)(\\?([^#\\s]*))?(#([^\\s]*))?'
-    }
-  }
+      pattern: '([^\\s:/?#]+):\\/\\/([^/?#\\s]*)([^?#\\s]*)(\\?([^#\\s]*))?(#([^\\s]*))?',
+    },
+  },
 ];
 
 const likelihoodPriority: { [likelyHoodName: string]: number } = {
@@ -105,7 +105,7 @@ const likelihoodPriority: { [likelyHoodName: string]: number } = {
   UNLIKELY: 2,
   POSSIBLE: 3,
   LIKELY: 4,
-  VERY_LIKELY: 5
+  VERY_LIKELY: 5,
 };
 
 const includeQuote = true;
@@ -187,7 +187,7 @@ export interface GoogleDLPRedactorOptions {
 
 /** @public */
 export class GoogleDLPRedactor implements IAsyncRedactor {
-  dlpClient: typeof DLP.DlpServiceClient;
+  dlpClient: DlpServiceClient;
 
   constructor(private opts: GoogleDLPRedactorOptions = {}) {
     this.dlpClient = new DLP.DlpServiceClient(this.opts.clientOptions);
@@ -218,10 +218,10 @@ export class GoogleDLPRedactor implements IAsyncRedactor {
 
     // handle info type excludes and includes
     const infoTypes = defaultInfoTypes
-      .filter(infoType => !this.opts.excludeInfoTypes || !this.opts.excludeInfoTypes.includes(infoType.name))
-      .concat((this.opts.includeInfoTypes || []).map(infoTypeName => ({ name: infoTypeName })));
+      .filter((infoType) => !this.opts.excludeInfoTypes || !this.opts.excludeInfoTypes.includes(infoType.name))
+      .concat((this.opts.includeInfoTypes || []).map((infoTypeName) => ({ name: infoTypeName })));
 
-    const response = await this.dlpClient.inspectContent({
+    const response: any = await this.dlpClient.inspectContent({
       parent: this.dlpClient.projectPath(projectId),
       inspectConfig: Object.assign(
         {
@@ -230,12 +230,12 @@ export class GoogleDLPRedactor implements IAsyncRedactor {
           minLikelihood,
           includeQuote,
           limits: {
-            maxFindingsPerRequest: maxFindings
-          }
+            maxFindingsPerRequest: maxFindings,
+          },
         },
         this.opts.inspectConfig
       ),
-      item: { value: textToRedact }
+      item: { value: textToRedact },
     });
     const findings = response[0].result.findings;
 
@@ -244,7 +244,7 @@ export class GoogleDLPRedactor implements IAsyncRedactor {
       const findingsWithoutOverlaps = removeOverlappingFindings(findings);
 
       // sort findings by highest likelihood first
-      findingsWithoutOverlaps.sort(function(a: any, b: any) {
+      findingsWithoutOverlaps.sort(function (a: any, b: any) {
         return likelihoodPriority[b.likelihood] - likelihoodPriority[a.likelihood];
       });
 
