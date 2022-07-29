@@ -1,6 +1,6 @@
 {
   "name": "redact-pii",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Remove personally identifiable information from text.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -8,11 +8,10 @@
     "build": "del lib && tsc --pretty",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run verify_all && npm run build",
-    "verify_all": "npm run typecheck && npm test && npm run test_prettier && changelog-verify CHANGELOG.md",
+    "verify_all": "npm run typecheck && npm test && npm run test_prettier",
     "test": "jest",
     "test_prettier": "prettier './+(src|test)/**/*.+(js|ts|tsx)' --list-different",
-    "prettier": "prettier './+(src|test)/**/*.+(js|ts|tsx)' --write",
-    "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md"
+    "prettier": "prettier './+(src|test)/**/*.+(js|ts|tsx)' --write"
   },
   "repository": {
     "type": "git",
@@ -21,19 +20,17 @@
   "author": "Christian Theilemann <christian@solvvy.com>",
   "license": "MIT",
   "dependencies": {
-    "@google-cloud/dlp": "^4.0.1",
+    "@google-cloud/dlp": "^4.1.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/jest": "28.1.3",
+    "@types/jest": "28.1.6",
     "@types/lodash": "^4.14.182",
-    "changelog-verify": "^1.0.4",
-    "del-cli": "4.0.1",
-    "jest": "28.1.1",
+    "del-cli": "5.0.0",
+    "jest": "28.1.3",
     "prettier": "2.7.1",
-    "ts-jest": "28.0.5",
-    "typescript": "4.7.4",
-    "version-changelog": "3.1.1"
+    "ts-jest": "28.0.7",
+    "typescript": "4.7.4"
   },
   "prettier": {
     "singleQuote": true,
