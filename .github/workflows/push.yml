@@ -1,15 +1,17 @@
 on: push
 name: Verify the module
+
+env:
+  NODE_VERSION: 18
+
 jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: install
-      uses: actions/npm@1.0.0
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
       with:
-        args: ci
+        node-version: ${{ env.NODE_VERSION }}
+    - run: npm ci
     - name: verify_all
-      uses: actions/npm@1.0.0
-      with:
-        args: run verify_all
+      run: npm run verify_all
